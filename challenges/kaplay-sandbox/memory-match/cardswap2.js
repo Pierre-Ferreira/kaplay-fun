@@ -77,6 +77,7 @@ function addCard(p, card_tag, unique_id_tag) {
             }
             // If it same card was not selected then continue.
             if (notSameCardSelected) {
+                debug.log("Update selected card!")
                 // Remove card concealer.
                 cardConcealer.destroy()
                 // Display the card picture.
@@ -110,42 +111,53 @@ function addCard(p, card_tag, unique_id_tag) {
 
         if (selected_cards_tags[0].card_tag === selected_cards_tags[1].card_tag) {
             debug.log("MATCHING!!!")
-            const matchingCard = get(card_tag).forEach((e) => {
-                debug.log("e.card_solved:", e.card_solved)
+            solvedPairsCnt += 1
+            get(card_tag).forEach((e) => {
+                addKaboom(e.pos.sub(0, 50));
                 e.card_solved = true
-                debug.log("e2.card_solved:", e.card_solved)
+                e.color = YELLOW
+                e.onHoverUpdate(() => {
+                    e.color = YELLOW;
+                    e.scale = vec2(1.025);
+                });
+                e.onHoverEnd(() => {
+                    e.color = YELLOW;
+                    e.scale = vec2(1);
+                });
+                e.sprite
             })
         } else {
             debug.log("NOT MATCHING!!!")
             get(selected_cards_tags[0].unique_id_tag).forEach((e1) => {
-                e1.add(createCardConcealer())
-                e1.onHoverUpdate(() => {
-                    const t = time() * 10;
-                    e1.color = hsl2rgb((t / 10) % 1, 0.6, 0.7);
-                    e1.scale = vec2(1.05);
-                    setCursor("pointer");
-                });
+                resetCard(e1)
             })
 
             get(selected_cards_tags[1].unique_id_tag).forEach((e2) => {
-                e2.add(createCardConcealer())
-                e2.onHoverUpdate(() => {
-                    const t = time() * 10;
-                    e2.color = hsl2rgb((t / 10) % 1, 0.6, 0.7);
-                    e2.scale = vec2(1.05);
-                    setCursor("pointer");
-                });
+                resetCard(e2)
             })
  
         }
     }
-    function resetCards() {
-
+    function resetCard(e) {
+        debug.log("resetCard")
+        e.add(createCardConcealer())
+        cardPicture.destroy()
+        // e.destroy()
+        e.onHoverUpdate(() => {
+            const t = time() * 10;
+            e.color = hsl2rgb((t / 10) % 1, 0.6, 0.7);
+            e.scale = vec2(1.05);
+            setCursor("pointer");
+        });
     }
 
     return card;
 }
+let solvedPairsCnt = 0
+let solvedPairsForWin = 1
 let no_of_cards_selected = 0;
 let selected_cards_tags = []
 addCard(vec2(200, 200), "beaner", "85563");
-addCard(vec2(400, 200), "bean", "38283");
+addCard(vec2(400, 200), "beans", "38283");
+addCard(vec2(200, 450), "bean", "382d83");
+addCard(vec2(400, 450), "bean", "382w83");
