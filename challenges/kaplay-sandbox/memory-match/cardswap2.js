@@ -2,8 +2,8 @@ kaplay({
     background: [135, 62, 132],
 });
 
-  loadSprite("cardFront", "/sprites/bean.png");
-  loadSprite("cardBack", "/sprites/ghosty.png");
+  loadSprite("cardPicture", "/sprites/bean.png");
+  loadSprite("cardConcealer", "/sprites/ghosty.png");
   
 // reset cursor to default on frame start for easier cursor management
 onUpdate(() => setCursor("default"));
@@ -17,13 +17,14 @@ function addCard(p) {
         scale(1),
         anchor("center"),
         outline(4),
+        color(225, 225, 225),
     ]);
 
     // add a child object that displays the text
-    card.add([
-        sprite("cardBack"),
+    const concealCard = card.add([
+        sprite("cardConcealer"),
         anchor("center"),
-        "cardBack",
+        area(),
     ]);
 
     // onHoverUpdate() comes from area() component
@@ -45,11 +46,12 @@ function addCard(p) {
     // onClick() comes from area() component
     // it runs once when the object is clicked
     card.onClick(() => {
+        concealCard.destroy()
         card.add([
-            sprite("cardFront"),
+            sprite("cardPicture"),
             anchor("center"),
         ]);
-        card.onHoverUpdate(() => {
+        card.onUpdate(() => {
             const t = time() * 10;
             card.color = hsl2rgb(255, 255, 255);
             card.scale = vec2(1);
