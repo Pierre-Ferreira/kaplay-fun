@@ -19,9 +19,14 @@ function addCard(p, card_tag, unique_id_tag) {
         outline(4),
         color(225, 225, 225),
         card_tag,
+        unique_id_tag,
+        {
+            card_solved: false,
+            card_selected: false,
+        },
     ]);
-    let card_selected = false
-    let card_solved = false
+    // let card_selected = false
+    // let card_solved = false
 
     // Function to create a card concealer.
     function createCardConcealer() {
@@ -62,7 +67,7 @@ function addCard(p, card_tag, unique_id_tag) {
     // onClick() comes from area() component
     // it runs once when the object is clicked
     card.onClick(() => {
-        if (!card_solved) {
+        if (!card.card_solved) {
             // Remove card concealer.
             cardConcealer.destroy()
             // Display the card picture.
@@ -71,7 +76,7 @@ function addCard(p, card_tag, unique_id_tag) {
                 card.color = hsl2rgb(255, 255, 255);
                 card.scale = vec2(1);
             });
-            card_selected = true
+            card.card_selected = true
             no_of_cards_selected += 1
             let cardObj = {
                 card_tag,
@@ -81,7 +86,7 @@ function addCard(p, card_tag, unique_id_tag) {
             // Check if two cards have been selected.
             if (no_of_cards_selected >= 2) {
                 debug.log("Two selected")
-                debug.log(selected_cards_tags)
+                //debug.log(selected_cards_tags)
                 // Check if the two cards match. 
                 checkCardMatch()
                 no_of_cards_selected = 0
@@ -93,18 +98,20 @@ function addCard(p, card_tag, unique_id_tag) {
 
     // Function to check if the two cards selected have matching tags.
     function checkCardMatch() {
-        if (selected_cards_tags[0].card_tag === selected_cards_tags[1].card_tag){
+
+        if (selected_cards_tags[0].card_tag === selected_cards_tags[1].card_tag) {
             debug.log("MATCHING!!!")
-            card_solved =true
-            // card.onUpdate(() => {
-                
-            // });
+            const matchingCard = get(card_tag).forEach((e) => {
+                debug.log("e.card_solved:", e.card_solved)
+                e.card_solved = true
+                debug.log("e2.card_solved:", e.card_solved)
+            })
         } else {
             debug.log("NOT MATCHING!!!")
-            const matchingCard = get("bean");
-              if (matchingCard) {
-                debug.log("Target properties updated!");
-            }
+              const matchingCard = get(card_tag,{ recursive: true }).forEach((e) => {
+                e.cardPicture.destroy()
+                e.cardConcealer.add()
+            })
             // cardPicture.destroy()
             // cardConcealer.add()
         }
@@ -117,5 +124,5 @@ function addCard(p, card_tag, unique_id_tag) {
 }
 let no_of_cards_selected = 0;
 let selected_cards_tags = []
-addCard(vec2(200, 200), "bean", "85563");
+addCard(vec2(200, 200), "beaner", "85563");
 addCard(vec2(400, 200), "bean", "38283");
