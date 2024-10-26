@@ -8,8 +8,8 @@ kaplay({
 // reset cursor to default on frame start for easier cursor management
 onUpdate(() => setCursor("default"));
 
-function addCard(p) {
-    // add a parent background object
+function addCard(p, card_tag) {
+    // add a card object
     const card = add([
         rect(160, 200, { radius: 8 }),
         pos(p),
@@ -18,15 +18,30 @@ function addCard(p) {
         anchor("center"),
         outline(4),
         color(225, 225, 225),
+        card_tag,
     ]);
+    let card_selected = false
 
-    // add a child object that displays the text
-    const concealCard = card.add([
-        sprite("cardConcealer"),
-        anchor("center"),
-        area(),
-    ]);
+    // Function to create a card concealer.
+    function createCardConcealer() {
+        return [
+            sprite("cardConcealer"),
+            anchor("center"),
+            area(),
+        ];
+    }
+    // Add a card concealer as a child to the card
+    const cardConcealer = card.add(createCardConcealer());
 
+    // Function to create a card picture
+    function createCardPicture() {
+        return [
+            sprite("cardPicture"),
+            anchor("center"),
+            area(),
+        ];
+    }
+    
     // onHoverUpdate() comes from area() component
     // it runs every frame when the object is being hovered
     card.onHoverUpdate(() => {
@@ -46,21 +61,19 @@ function addCard(p) {
     // onClick() comes from area() component
     // it runs once when the object is clicked
     card.onClick(() => {
-        concealCard.destroy()
-        card.add([
-            sprite("cardPicture"),
-            anchor("center"),
-        ]);
+        // Remove card concealer.
+        cardConcealer.destroy()
+        // Display the card picture.
+        const cardPicture = card.add(createCardPicture());
         card.onUpdate(() => {
-            const t = time() * 10;
             card.color = hsl2rgb(255, 255, 255);
             card.scale = vec2(1);
-            setCursor("pointer");
         });
+        card_selected = true
     });
 
     return card;
 }
 
-addCard(vec2(200, 200));
-addCard(vec2(400, 200));
+addCard(vec2(200, 200), "bean");
+addCard(vec2(400, 200), "bean");
