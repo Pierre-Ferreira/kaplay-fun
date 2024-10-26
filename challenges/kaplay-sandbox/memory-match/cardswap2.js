@@ -68,29 +68,38 @@ function addCard(p, card_tag, unique_id_tag) {
     // it runs once when the object is clicked
     card.onClick(() => {
         if (!card.card_solved) {
-            // Remove card concealer.
-            cardConcealer.destroy()
-            // Display the card picture.
-            const cardPicture = card.add(createCardPicture());
-            card.onUpdate(() => {
-                card.color = hsl2rgb(255, 255, 255);
-                card.scale = vec2(1);
-            });
-            card.card_selected = true
-            no_of_cards_selected += 1
-            let cardObj = {
-                card_tag,
-                unique_id_tag,
+            // Check if the same card was clicked.
+            let notSameCardSelected = true
+            if (selected_cards_tags[0] !== undefined) {
+                if (unique_id_tag === selected_cards_tags[0].unique_id_tag) {
+                    notSameCardSelected = false
+                }
             }
-            selected_cards_tags.push(cardObj)
-            // Check if two cards have been selected.
-            if (no_of_cards_selected >= 2) {
-                debug.log("Two selected")
-                //debug.log(selected_cards_tags)
-                // Check if the two cards match. 
-                checkCardMatch()
-                no_of_cards_selected = 0
-                selected_cards_tags = []
+            // If it same card was not selected then continue.
+            if (notSameCardSelected) {
+                // Remove card concealer.
+                cardConcealer.destroy()
+                // Display the card picture.
+                const cardPicture = card.add(createCardPicture());
+                card.onHoverUpdate(() => {
+                    card.color = hsl2rgb(255, 255, 255);
+                    card.scale = vec2(1);
+                });
+                card.card_selected = true
+                no_of_cards_selected += 1
+                let cardObj = {
+                    card_tag,
+                    unique_id_tag,
+                }
+                selected_cards_tags.push(cardObj)
+                // Check if two cards have been selected.
+                if (no_of_cards_selected >= 2) {
+                    debug.log("Two selected")
+                    // Check if the two cards match. 
+                    checkCardMatch()
+                    no_of_cards_selected = 0
+                    selected_cards_tags = []
+                }
             }
             debug.log(selected_cards_tags)
         }
@@ -108,12 +117,26 @@ function addCard(p, card_tag, unique_id_tag) {
             })
         } else {
             debug.log("NOT MATCHING!!!")
-              const matchingCard = get(card_tag,{ recursive: true }).forEach((e) => {
-                e.cardPicture.destroy()
-                e.cardConcealer.add()
+            get(selected_cards_tags[0].unique_id_tag).forEach((e1) => {
+                e1.add(createCardConcealer())
+                e1.onHoverUpdate(() => {
+                    const t = time() * 10;
+                    e1.color = hsl2rgb((t / 10) % 1, 0.6, 0.7);
+                    e1.scale = vec2(1.05);
+                    setCursor("pointer");
+                });
             })
-            // cardPicture.destroy()
-            // cardConcealer.add()
+
+            get(selected_cards_tags[1].unique_id_tag).forEach((e2) => {
+                e2.add(createCardConcealer())
+                e2.onHoverUpdate(() => {
+                    const t = time() * 10;
+                    e2.color = hsl2rgb((t / 10) % 1, 0.6, 0.7);
+                    e2.scale = vec2(1.05);
+                    setCursor("pointer");
+                });
+            })
+ 
         }
     }
     function resetCards() {
