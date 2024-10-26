@@ -70,10 +70,24 @@ function addCard(p, card_tag) {
             card.scale = vec2(1);
         });
         card_selected = true
+        no_of_cards_selected += 1
+        selected_cards_tags.push(card_tag)
+        if (no_of_cards_selected >= 2) {
+            debug.log("Two selected")
+            debug.log(selected_cards_tags)
+            // Check if the two cards selected have matching tags.
+            if (selected_cards_tags[0] === selected_cards_tags[1]){
+                debug.log("MATCHING!!!")
+            } else {
+                debug.log("NOT MATCHING!!!")
+            }
+        }
+        debug.log(selected_cards_tags)
     });
 
     return card;
 }
-
+let no_of_cards_selected = 0;
+let selected_cards_tags = []
 addCard(vec2(200, 200), "bean");
 addCard(vec2(400, 200), "bean");
