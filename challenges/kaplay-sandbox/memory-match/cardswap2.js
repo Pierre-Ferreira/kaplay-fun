@@ -8,7 +8,7 @@ kaplay({
 // reset cursor to default on frame start for easier cursor management
 onUpdate(() => setCursor("default"));
 
-function addCard(p, card_tag) {
+function addCard(p, card_tag, unique_id_tag) {
     // add a card object
     const card = add([
         rect(160, 200, { radius: 8 }),
@@ -21,6 +21,7 @@ function addCard(p, card_tag) {
         card_tag,
     ]);
     let card_selected = false
+    let card_solved = false
 
     // Function to create a card concealer.
     function createCardConcealer() {
@@ -61,33 +62,60 @@ function addCard(p, card_tag) {
     // onClick() comes from area() component
     // it runs once when the object is clicked
     card.onClick(() => {
-        // Remove card concealer.
-        cardConcealer.destroy()
-        // Display the card picture.
-        const cardPicture = card.add(createCardPicture());
-        card.onUpdate(() => {
-            card.color = hsl2rgb(255, 255, 255);
-            card.scale = vec2(1);
-        });
-        card_selected = true
-        no_of_cards_selected += 1
-        selected_cards_tags.push(card_tag)
-        if (no_of_cards_selected >= 2) {
-            debug.log("Two selected")
-            debug.log(selected_cards_tags)
-            // Check if the two cards selected have matching tags.
-            if (selected_cards_tags[0] === selected_cards_tags[1]){
-                debug.log("MATCHING!!!")
-            } else {
-                debug.log("NOT MATCHING!!!")
+        if (!card_solved) {
+            // Remove card concealer.
+            cardConcealer.destroy()
+            // Display the card picture.
+            const cardPicture = card.add(createCardPicture());
+            card.onUpdate(() => {
+                card.color = hsl2rgb(255, 255, 255);
+                card.scale = vec2(1);
+            });
+            card_selected = true
+            no_of_cards_selected += 1
+            let cardObj = {
+                card_tag,
+                unique_id_tag,
             }
+            selected_cards_tags.push(cardObj)
+            // Check if two cards have been selected.
+            if (no_of_cards_selected >= 2) {
+                debug.log("Two selected")
+                debug.log(selected_cards_tags)
+                // Check if the two cards match. 
+                checkCardMatch()
+                no_of_cards_selected = 0
+                selected_cards_tags = []
+            }
+            debug.log(selected_cards_tags)
         }
-        debug.log(selected_cards_tags)
     });
+
+    // Function to check if the two cards selected have matching tags.
+    function checkCardMatch() {
+        if (selected_cards_tags[0].card_tag === selected_cards_tags[1].card_tag){
+            debug.log("MATCHING!!!")
+            card_solved =true
+            // card.onUpdate(() => {
+                
+            // });
+        } else {
+            debug.log("NOT MATCHING!!!")
+            const matchingCard = get("bean");
+              if (matchingCard) {
+                debug.log("Target properties updated!");
+            }
+            // cardPicture.destroy()
+            // cardConcealer.add()
+        }
+    }
+    function resetCards() {
+
+    }
 
     return card;
 }
 let no_of_cards_selected = 0;
 let selected_cards_tags = []
-addCard(vec2(200, 200), "bean");
-addCard(vec2(400, 200), "bean");
+addCard(vec2(200, 200), "bean", "85563");
+addCard(vec2(400, 200), "bean", "38283");
