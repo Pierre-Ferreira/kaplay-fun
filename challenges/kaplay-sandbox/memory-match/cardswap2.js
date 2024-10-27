@@ -7,9 +7,12 @@ kaplay({
   loadSprite("apple", "/sprites/apple.png");
   loadSprite("bobo", "/sprites/bobo.png");
   
-// reset cursor to default on frame start for easier cursor management
+scene("memory_match_board", () => {
+
+// reset cursor to default on frame start for easier cursor management.
 onUpdate(() => setCursor("default"));
 
+// Function to add a card.
 function addCard(p, card_tag, unique_id_tag) {
     // add a card object
     const card = add([
@@ -147,7 +150,7 @@ function checkCardMatch() {
     } else {
         debug.log("NOT MATCHING!!!");
         // Pause for split seconds before resetting unmatched cards.
-        wait(0.7, () => {
+        wait(0.6, () => {
             // Reset first selected card.
             get(firstSelectedCardArrObj.unique_id_tag).forEach((e1) => {
                 resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
@@ -203,3 +206,6 @@ addCard(vec2(200, 200), "bobo", "85563");
 addCard(vec2(400, 200), "bean", "38283");
 addCard(vec2(200, 450), "bean", "382d83");
 addCard(vec2(400, 450), "apple", "382w83");
+});
+
+go("memory_match_board");
