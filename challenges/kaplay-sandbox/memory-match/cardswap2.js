@@ -2,8 +2,10 @@ kaplay({
     background: [135, 62, 132],
 });
 
-  loadSprite("cardPicture", "/sprites/bean.png");
+  loadSprite("bean", "/sprites/bean.png");
   loadSprite("cardConcealer", "/sprites/ghosty.png");
+  loadSprite("apple", "/sprites/apple.png");
+  loadSprite("bobo", "/sprites/bobo.png");
   
 // reset cursor to default on frame start for easier cursor management
 onUpdate(() => setCursor("default"));
@@ -34,6 +36,7 @@ function addCard(p, card_tag, unique_id_tag) {
             sprite("cardConcealer"),
             anchor("center"),
             area(),
+            "card-concealer",
         ];
     }
     // Add a card concealer as a child to the card
@@ -42,7 +45,7 @@ function addCard(p, card_tag, unique_id_tag) {
     // Function to create a card picture
     function createCardPicture() {
         return [
-            sprite("cardPicture"),
+            sprite(card_tag),
             anchor("center"),
             area(),
             unique_id_tag,
@@ -80,7 +83,8 @@ function addCard(p, card_tag, unique_id_tag) {
             if (notSameCardSelected) {
                 debug.log("Update selected card!")
                 // Remove card concealer.
-                cardConcealer.destroy()
+                // cardConcealer.destroy()
+                destroyChildrenOfGameObject(card, "card-concealer")
                 // Display the card picture.
                 const cardPicture = card.add(createCardPicture());
                 card.onHoverUpdate(() => {
@@ -129,40 +133,46 @@ function addCard(p, card_tag, unique_id_tag) {
             })
         } else {
             debug.log("NOT MATCHING!!!")
-            get(selected_cards_tags[0].unique_id_tag, {recursive: true}).forEach((e1) => {
+            get(selected_cards_tags[0].unique_id_tag).forEach((e1) => {
                 resetCard(e1, selected_cards_tags[0].unique_id_tag)
             })
 
-            get(selected_cards_tags[1].unique_id_tag, {recursive: true}).forEach((e2) => {
+            get(selected_cards_tags[1].unique_id_tag).forEach((e2) => {
                 resetCard(e2, selected_cards_tags[1].unique_id_tag)
             })
  
         }
     }
-    function resetCard(e, unique_id_tag) {
-        debug.log("resetCard")
-        e.children.forEach((child) => {
-            debug.log("CHILD????:", child.is(unique_id_tag))
-            if (child.is(unique_id_tag)) {
+
+    function destroyChildrenOfGameObject(gameObj,tag) {
+        gameObj.children.forEach((child) => {
+            if (child.is(tag)) {
                 child.destroy()
             }
         });
-        e.add(createCardConcealer())
-        e.onHoverUpdate(() => {
+    }
+
+    function resetCard(card, tag) {
+        destroyChildrenOfGameObject(card, tag)
+        card.add(createCardConcealer())
+        card.onHoverUpdate(() => {
             const t = time() * 10;
-            e.color = hsl2rgb((t / 10) % 1, 0.6, 0.7);
-            e.scale = vec2(1.05);
+            card.color = hsl2rgb((t / 10) % 1, 0.6, 0.7);
+            card.scale = vec2(1.05);
             setCursor("pointer");
         });
     }
 
     return card;
 }
+
+
+
 let solvedPairsCnt = 0
 let solvedPairsForWin = 1
 let no_of_cards_selected = 0;
 let selected_cards_tags = []
-addCard(vec2(200, 200), "beaner", "85563");
-addCard(vec2(400, 200), "beans", "38283");
+addCard(vec2(200, 200), "bobo", "85563");
+addCard(vec2(400, 200), "bean", "38283");
 addCard(vec2(200, 450), "bean", "382d83");
-addCard(vec2(400, 450), "bean", "382w83");
+addCard(vec2(400, 450), "apple", "382w83");
