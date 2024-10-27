@@ -24,11 +24,8 @@ function addCard(p, card_tag, unique_id_tag) {
         unique_id_tag,
         {
             card_solved: false,
-            card_selected: false,
         },
     ]);
-    // let card_selected = false
-    // let card_solved = false
 
     // Function to create a card concealer.
     function createCardConcealer() {
@@ -40,7 +37,7 @@ function addCard(p, card_tag, unique_id_tag) {
         ];
     }
     // Add a card concealer as a child to the card
-    const cardConcealer = card.add(createCardConcealer());
+    card.add(createCardConcealer());
 
     // Function to create a card picture
     function createCardPicture() {
@@ -65,7 +62,7 @@ function addCard(p, card_tag, unique_id_tag) {
     // it runs once when the object stopped being hovered
     card.onHoverEnd(() => {
         card.scale = vec2(1);
-        card.color = rgb();
+        card.color = rgb(255, 255, 255);
     });
 
     // onClick() comes from area() component
@@ -82,22 +79,29 @@ function addCard(p, card_tag, unique_id_tag) {
             // If it same card was not selected then continue.
             if (notSameCardSelected) {
                 debug.log("Update selected card!")
-                // Remove card concealer.
-                // cardConcealer.destroy()
+                // Remove card concealer child.
                 destroyChildrenOfGameObject(card, "card-concealer")
-                // Display the card picture.
-                const cardPicture = card.add(createCardPicture());
+                // Display the card picture child.
+                card.add(createCardPicture());
+                // Set color of selected card and hover properties.
+                card.color = RED
                 card.onHoverUpdate(() => {
-                    card.color = hsl2rgb(255, 255, 255);
+                    card.color = RED;
                     card.scale = vec2(1);
                 });
-                card.card_selected = true
-                no_of_cards_selected += 1
+                card.onHoverEnd(() => {
+                    card.color = RED;
+                    card.scale = vec2(1);
+                });
+
+                // Create card object and push it to selected card array.
                 let cardObj = {
                     card_tag,
                     unique_id_tag,
                 }
                 selected_cards_tags.push(cardObj)
+                // Increase the number of cards selected.
+                no_of_cards_selected += 1
                 // Check if two cards have been selected.
                 if (no_of_cards_selected >= 2) {
                     debug.log("Two selected")
@@ -153,13 +157,21 @@ function addCard(p, card_tag, unique_id_tag) {
     }
 
     function resetCard(card, tag) {
+        // Destroy the card picture child.
         destroyChildrenOfGameObject(card, tag)
+        // Add the card concealer child.
         card.add(createCardConcealer())
+        // Reset card color and hover properties
+        card.color = rgb(255, 255, 255);
         card.onHoverUpdate(() => {
             const t = time() * 10;
             card.color = hsl2rgb((t / 10) % 1, 0.6, 0.7);
             card.scale = vec2(1.05);
             setCursor("pointer");
+        });
+        card.onHoverEnd(() => {
+            card.color = rgb(255, 255, 255);
+            card.scale = vec2(1);
         });
     }
 
