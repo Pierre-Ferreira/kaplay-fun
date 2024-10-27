@@ -116,43 +116,45 @@ function addCard(p, card_tag, unique_id_tag) {
     });
 
     // Function to check if the two cards selected have matching tags.
-    function checkCardMatch() {
-        // Check if the first card and second card selected have matching tags.
-        if (selected_cards_tags[0].card_tag === selected_cards_tags[1].card_tag) {
-            debug.log("MATCHING!!!")
-            // MATCHING cards.
-            // Increase the global variable solvedPairsCnt.
-            solvedPairsCnt += 1
-            // Loop over each matching card selected.
-            get(card_tag).forEach((e) => {
-                // Add animation.
-                addKaboom(e.pos.sub(0, 50));
-                // Set the card as solved.
-                e.card_solved = true
-                // Set card color and hover properties.
-                e.color = YELLOW
-                e.onHoverUpdate(() => {
-                    e.color = YELLOW;
-                    e.scale = vec2(1.025);
-                });
-                e.onHoverEnd(() => {
-                    e.color = YELLOW;
-                    e.scale = vec2(1);
-                });
-            })
-        } else {
-            debug.log("NOT MATCHING!!!")
-            // NOT MATCHING cards.
-            // Find the first card selected and reset it.
-            get(selected_cards_tags[0].unique_id_tag).forEach((e1) => {
-                resetCard(e1, selected_cards_tags[0].unique_id_tag)
-            })
-            // Find the second card selected and reset it.
-            get(selected_cards_tags[1].unique_id_tag).forEach((e2) => {
-                resetCard(e2, selected_cards_tags[1].unique_id_tag)
-            })
-        }
+function checkCardMatch() {
+
+    // Store the selected cards in local variables to capture their values in this scope
+    const firstSelectedCard = selected_cards_tags[0];
+    const secondSelectedCard = selected_cards_tags[1];
+
+    // Check if the first card and second card selected have matching tags.
+    if (firstSelectedCard.card_tag === secondSelectedCard.card_tag) {
+        debug.log("MATCHING!!!");
+        // MATCHING cards.
+        solvedPairsCnt += 1;
+        get(firstSelectedCard.card_tag).forEach((e) => {
+            addKaboom(e.pos.sub(0, 50));
+            e.card_solved = true;
+            e.color = YELLOW;
+            e.onHoverUpdate(() => {
+                e.color = YELLOW;
+                e.scale = vec2(1.025);
+            });
+            e.onHoverEnd(() => {
+                e.color = YELLOW;
+                e.scale = vec2(1);
+            });
+        });
+    } else {
+        debug.log("NOT MATCHING!!!");
+        // Pause for 3 seconds before resetting unmatched cards.
+        wait(1, () => {
+            // Reset first selected card.
+            get(firstSelectedCard.unique_id_tag).forEach((e1) => {
+                resetCard(e1, firstSelectedCard.unique_id_tag);
+            });
+            // Reset second selected card.
+            get(secondSelectedCard.unique_id_tag).forEach((e2) => {
+                resetCard(e2, secondSelectedCard.unique_id_tag);
+            });
+        });
     }
+}
 
     function destroyChildrenOfGameObject(gameObj,tag) {
         // Loop through the game objects children and destroy those that matches the tag.
