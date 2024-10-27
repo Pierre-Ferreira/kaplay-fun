@@ -24,6 +24,7 @@ function addCard(p, card_tag, unique_id_tag) {
         unique_id_tag,
         {
             card_solved: false,
+            card_reveal_allowed: true,
         },
     ]);
 
@@ -68,7 +69,10 @@ function addCard(p, card_tag, unique_id_tag) {
     // onClick() comes from area() component
     // it runs once when the object is clicked
     card.onClick(() => {
-        if (!card.card_solved) {
+        // Only continue if the card is not solved and card is allowed to be revealed.
+        if (!card.card_solved && card.card_reveal_allowed) {
+            // Prevent card from being reveal, until reset of card.
+            card.card_reveal_allowed = false
             // Check if the same card was clicked.
             let notSameCardSelected = true
             if (selected_cards_tags[0] !== undefined) {
@@ -119,15 +123,15 @@ function addCard(p, card_tag, unique_id_tag) {
 function checkCardMatch() {
 
     // Store the selected cards in local variables to capture their values in this scope
-    const firstSelectedCard = selected_cards_tags[0];
-    const secondSelectedCard = selected_cards_tags[1];
+    const firstSelectedCardArrObj = selected_cards_tags[0];
+    const secondSelectedCardArrObj = selected_cards_tags[1];
 
     // Check if the first card and second card selected have matching tags.
-    if (firstSelectedCard.card_tag === secondSelectedCard.card_tag) {
+    if (firstSelectedCardArrObj.card_tag === secondSelectedCardArrObj.card_tag) {
         debug.log("MATCHING!!!");
         // MATCHING cards.
         solvedPairsCnt += 1;
-        get(firstSelectedCard.card_tag).forEach((e) => {
+        get(firstSelectedCardArrObj.card_tag).forEach((e) => {
             addKaboom(e.pos.sub(0, 50));
             e.card_solved = true;
             e.color = YELLOW;
@@ -142,15 +146,15 @@ function checkCardMatch() {
         });
     } else {
         debug.log("NOT MATCHING!!!");
-        // Pause for 3 seconds before resetting unmatched cards.
-        wait(1, () => {
+        // Pause for split seconds before resetting unmatched cards.
+        wait(0.7, () => {
             // Reset first selected card.
-            get(firstSelectedCard.unique_id_tag).forEach((e1) => {
-                resetCard(e1, firstSelectedCard.unique_id_tag);
+            get(firstSelectedCardArrObj.unique_id_tag).forEach((e1) => {
+                resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
             });
             // Reset second selected card.
-            get(secondSelectedCard.unique_id_tag).forEach((e2) => {
-                resetCard(e2, secondSelectedCard.unique_id_tag);
+            get(secondSelectedCardArrObj.unique_id_tag).forEach((e2) => {
+                resetCard(e2, secondSelectedCardArrObj.unique_id_tag);
             });
         });
     }
@@ -170,6 +174,8 @@ function checkCardMatch() {
         destroyChildrenOfGameObject(card, tag)
         // Add the card concealer child.
         card.add(createCardConcealer())
+        // Allow card to be revealed again.
+        card.card_reveal_allowed = true
         // Reset card color and hover properties
         card.color = rgb(255, 255, 255);
         card.onHoverUpdate(() => {
