@@ -45,6 +45,7 @@ function addCard(p, card_tag, unique_id_tag) {
             sprite("cardPicture"),
             anchor("center"),
             area(),
+            unique_id_tag,
         ];
     }
     
@@ -128,21 +129,25 @@ function addCard(p, card_tag, unique_id_tag) {
             })
         } else {
             debug.log("NOT MATCHING!!!")
-            get(selected_cards_tags[0].unique_id_tag).forEach((e1) => {
-                resetCard(e1)
+            get(selected_cards_tags[0].unique_id_tag, {recursive: true}).forEach((e1) => {
+                resetCard(e1, selected_cards_tags[0].unique_id_tag)
             })
 
-            get(selected_cards_tags[1].unique_id_tag).forEach((e2) => {
-                resetCard(e2)
+            get(selected_cards_tags[1].unique_id_tag, {recursive: true}).forEach((e2) => {
+                resetCard(e2, selected_cards_tags[1].unique_id_tag)
             })
  
         }
     }
-    function resetCard(e) {
+    function resetCard(e, unique_id_tag) {
         debug.log("resetCard")
+        e.children.forEach((child) => {
+            debug.log("CHILD????:", child.is(unique_id_tag))
+            if (child.is(unique_id_tag)) {
+                child.destroy()
+            }
+        });
         e.add(createCardConcealer())
-        cardPicture.destroy()
-        // e.destroy()
         e.onHoverUpdate(() => {
             const t = time() * 10;
             e.color = hsl2rgb((t / 10) % 1, 0.6, 0.7);
