@@ -7,6 +7,12 @@ export default function initGame() {
     k.loadSprite("bean", "./sprites/cards/bean.png");
     k.loadSprite("apple", "./sprites/cards/apple.png");
     k.loadSprite("bobo", "./sprites/cards/bobo.png");
+    k.loadSprite("butterfly", "./sprites/cards/butterfly.png");
+    k.loadSprite("meat", "./sprites/cards/meat.png");
+    k.loadSprite("note", "./sprites/cards/note.png");
+    k.loadSprite("grapes", "./sprites/cards/grapes.png");
+    k.loadSprite("moon", "./sprites/cards/moon.png");
+
     k.scene("memory_match_board", () => {
 
         // reset cursor to default on frame start for easier cursor management.
@@ -202,10 +208,22 @@ export default function initGame() {
         let solvedPairsForWin = 1
         let no_of_cards_selected = 0;
         let selected_cards_tags = []
-        addCard(k.vec2(200, 200), "bobo", "85563");
-        addCard(k.vec2(400, 200), "bean", "38283");
-        addCard(k.vec2(200, 450), "bean", "382d83");
-        addCard(k.vec2(400, 450), "apple", "382w83");
+        addCard(k.vec2(200, 200), "bobo", "8556f3");
+        addCard(k.vec2(400, 200), "apple", "384s2s83");
+        addCard(k.vec2(600, 200), "butterfly", "3828ks3");
+        addCard(k.vec2(800, 200), "meat", "3k828s3");
+        addCard(k.vec2(200, 450), "note", "382ds83");
+        addCard(k.vec2(400, 450), "grapes", "382w8k3");
+        addCard(k.vec2(600, 450), "moon", "382s83");
+        addCard(k.vec2(800, 450), "bean", "382a8k3");
+        addCard(k.vec2(200, 700), "butterfly", "382dy83");
+        addCard(k.vec2(400, 700), "grapes", "382yw83");
+        addCard(k.vec2(600, 700), "note", "38j283");
+        addCard(k.vec2(800, 700), "bobo", "3j82y83");
+        addCard(k.vec2(200, 950), "bean", "382d8j3");
+        addCard(k.vec2(400, 950), "apple", "382w83");
+        addCard(k.vec2(600, 950), "meat", "38jk283");
+        addCard(k.vec2(800, 950), "moon", "3828k3");
         });
     
         k.go("memory_match_board");
