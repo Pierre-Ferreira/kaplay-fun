@@ -20,8 +20,8 @@ export default function initGame() {
     
         // Function to add a card.
         function addCard(p: any, card_tag: string, unique_id_tag: string) {
-            let card_solved: boolean = false;
-            let card_reveal_allowed: boolean = true;
+            const card_solved: boolean = false;
+            const card_reveal_allowed: boolean = true;
             // add a card object
             const card = k.add([
                 k.rect(160, 200, { radius: 8 }),
@@ -110,7 +110,7 @@ export default function initGame() {
                         });
     
                         // Create card object and push it to selected card array.
-                        let cardObj = {
+                        const cardObj = {
                             card_tag,
                             unique_id_tag,
                         };
@@ -160,27 +160,27 @@ export default function initGame() {
                     // Pause for split seconds before resetting unmatched cards.
                     k.wait(0.6, () => {
                         // Reset first selected card.
-                        k.get(firstSelectedCardArrObj.unique_id_tag).forEach((e1: any) => {
+                        k.get(firstSelectedCardArrObj.unique_id_tag).forEach((e1: GameObj<any>) => {
                             resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
                         });
                         // Reset second selected card.
-                        k.get(secondSelectedCardArrObj.unique_id_tag).forEach((e2: any) => {
+                        k.get(secondSelectedCardArrObj.unique_id_tag).forEach((e2: GameObj<any>) => {
                             resetCard(e2, secondSelectedCardArrObj.unique_id_tag);
                         });
                     });
                 }
             }
     
-            function destroyChildrenOfGameObject(gameObj: any, tag: string) {
+            function destroyChildrenOfGameObject(gameObj: GameObj<any>, tag: string) {
                 // Loop through the game objects children and destroy those that match the tag.
-                gameObj.children.forEach((child: any) => {
+                gameObj.children.forEach((child: GameObj<any>) => {
                     if (child.is(tag)) {
                         child.destroy();
                     }
                 });
             }
     
-            function resetCard(card: any, tag: string) {
+            function resetCard(card: GameObj<any>, tag: string) {
                 // Destroy the card picture child.
                 destroyChildrenOfGameObject(card, tag);
                 // Add the card concealer child.
@@ -205,7 +205,7 @@ export default function initGame() {
         }
     
         let solvedPairsCnt: number = 0;
-        let solvedPairsForWin: number = 1;
+        const solvedPairsForWin: number = 1;
         let no_of_cards_selected: number = 0;
         let selected_cards_tags: { card_tag: string; unique_id_tag: string }[] = [];
         addCard(k.vec2(200, 200), "bobo", "8556f3");

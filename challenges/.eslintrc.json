@@ -11,7 +11,7 @@
       "airbnb",
       "prettier",
       // Optional for TypeScript: 
-      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -26,12 +26,12 @@
       "react-hooks",
       "jsx-a11y",
       "@typescript-eslint",
-      "prettier", // Add prettier plugin
+      "prettier" // Add prettier plugin
     ],
     "rules": {
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
-      "prettier/prettier": "error", // Shows Prettier errors as ESLint errors
+      "prettier/prettier": "error" // Shows Prettier errors as ESLint errors
     },
     "settings": {
       "react": {
