@@ -19,7 +19,9 @@ export default function initGame() {
         k.onUpdate(() => k.setCursor("default"));
     
         // Function to add a card.
-        function addCard(p, card_tag, unique_id_tag) {
+        function addCard(p: any, card_tag: string, unique_id_tag: string) {
+            let card_solved: boolean = false;
+            let card_reveal_allowed: boolean = true;
             // add a card object
             const card = k.add([
                 k.rect(160, 200, { radius: 8 }),
@@ -32,8 +34,8 @@ export default function initGame() {
                 card_tag,
                 unique_id_tag,
                 {
-                    card_solved: false,
-                    card_reveal_allowed: true,
+                    card_solved,
+                    card_reveal_allowed,
                 },
             ]);
     
@@ -81,23 +83,23 @@ export default function initGame() {
                 // Only continue if the card is not solved and card is allowed to be revealed.
                 if (!card.card_solved && card.card_reveal_allowed) {
                     // Prevent card from being reveal, until reset of card.
-                    card.card_reveal_allowed = false
+                    card.card_reveal_allowed = false;
                     // Check if the same card was clicked.
-                    let notSameCardSelected = true
+                    let notSameCardSelected = true;
                     if (selected_cards_tags[0] !== undefined) {
                         if (unique_id_tag === selected_cards_tags[0].unique_id_tag) {
-                            notSameCardSelected = false
+                            notSameCardSelected = false;
                         }
                     }
-                    // If it same card was not selected then continue.
+                    // If the same card was not selected, then continue.
                     if (notSameCardSelected) {
-                        console.log("Update selected card!")
+                        console.log("Update selected card!");
                         // Remove card concealer child.
-                        destroyChildrenOfGameObject(card, "card-concealer")
+                        destroyChildrenOfGameObject(card, "card-concealer");
                         // Display the card picture child.
                         card.add(createCardPicture());
                         // Set color of selected card and hover properties.
-                        card.color = k.RED
+                        card.color = k.RED;
                         card.onHoverUpdate(() => {
                             card.color = k.RED;
                             card.scale = k.vec2(1);
@@ -111,80 +113,80 @@ export default function initGame() {
                         let cardObj = {
                             card_tag,
                             unique_id_tag,
-                        }
-                        selected_cards_tags.push(cardObj)
+                        };
+                        selected_cards_tags.push(cardObj);
                         // Increase the number of cards selected.
-                        no_of_cards_selected += 1
+                        no_of_cards_selected += 1;
                         // Check if two cards have been selected.
                         if (no_of_cards_selected >= 2) {
-                            console.log("Two selected")
+                            console.log("Two selected");
                             // Check if the two cards match. 
-                            checkCardMatch()
-                            no_of_cards_selected = 0
-                            selected_cards_tags = []
+                            checkCardMatch();
+                            no_of_cards_selected = 0;
+                            selected_cards_tags = [];
                         }
                     }
-                    console.log(selected_cards_tags)
+                    console.log(selected_cards_tags);
                 }
             });
     
             // Function to check if the two cards selected have matching tags.
-        function checkCardMatch() {
+            function checkCardMatch() {
     
-            // Store the selected cards in local variables to capture their values in this scope
-            const firstSelectedCardArrObj = selected_cards_tags[0];
-            const secondSelectedCardArrObj = selected_cards_tags[1];
+                // Store the selected cards in local variables to capture their values in this scope
+                const firstSelectedCardArrObj = selected_cards_tags[0];
+                const secondSelectedCardArrObj = selected_cards_tags[1];
     
-            // Check if the first card and second card selected have matching tags.
-            if (firstSelectedCardArrObj.card_tag === secondSelectedCardArrObj.card_tag) {
-                console.log("MATCHING!!!");
-                // MATCHING cards.
-                solvedPairsCnt += 1;
-                k.get(firstSelectedCardArrObj.card_tag).forEach((e) => {
-                    k.addKaboom(e.pos.sub(0, 50));
-                    e.card_solved = true;
-                    e.color = k.YELLOW;
-                    e.onHoverUpdate(() => {
+                // Check if the first card and second card selected have matching tags.
+                if (firstSelectedCardArrObj.card_tag === secondSelectedCardArrObj.card_tag) {
+                    console.log("MATCHING!!!");
+                    // MATCHING cards.
+                    solvedPairsCnt += 1;
+                    k.get(firstSelectedCardArrObj.card_tag).forEach((e: any) => {
+                        k.addKaboom(e.pos.sub(0, 50));
+                        e.card_solved = true;
                         e.color = k.YELLOW;
-                        e.scale = k.vec2(1.025);
+                        e.onHoverUpdate(() => {
+                            e.color = k.YELLOW;
+                            e.scale = k.vec2(1.025);
+                        });
+                        e.onHoverEnd(() => {
+                            e.color = k.YELLOW;
+                            e.scale = k.vec2(1);
+                        });
                     });
-                    e.onHoverEnd(() => {
-                        e.color = k.YELLOW;
-                        e.scale = k.vec2(1);
+                } else {
+                    console.log("NOT MATCHING!!!");
+                    // Pause for split seconds before resetting unmatched cards.
+                    k.wait(0.6, () => {
+                        // Reset first selected card.
+                        k.get(firstSelectedCardArrObj.unique_id_tag).forEach((e1: any) => {
+                            resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
+                        });
+                        // Reset second selected card.
+                        k.get(secondSelectedCardArrObj.unique_id_tag).forEach((e2: any) => {
+                            resetCard(e2, secondSelectedCardArrObj.unique_id_tag);
+                        });
                     });
-                });
-            } else {
-                console.log("NOT MATCHING!!!");
-                // Pause for split seconds before resetting unmatched cards.
-                k.wait(0.6, () => {
-                    // Reset first selected card.
-                    k.get(firstSelectedCardArrObj.unique_id_tag).forEach((e1) => {
-                        resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
-                    });
-                    // Reset second selected card.
-                    k.get(secondSelectedCardArrObj.unique_id_tag).forEach((e2) => {
-                        resetCard(e2, secondSelectedCardArrObj.unique_id_tag);
-                    });
-                });
+                }
             }
-        }
     
-            function destroyChildrenOfGameObject(gameObj,tag) {
-                // Loop through the game objects children and destroy those that matches the tag.
-                gameObj.children.forEach((child) => {
+            function destroyChildrenOfGameObject(gameObj: any, tag: string) {
+                // Loop through the game objects children and destroy those that match the tag.
+                gameObj.children.forEach((child: any) => {
                     if (child.is(tag)) {
-                        child.destroy()
+                        child.destroy();
                     }
                 });
             }
     
-            function resetCard(card, tag) {
+            function resetCard(card: any, tag: string) {
                 // Destroy the card picture child.
-                destroyChildrenOfGameObject(card, tag)
+                destroyChildrenOfGameObject(card, tag);
                 // Add the card concealer child.
-                card.add(createCardConcealer())
+                card.add(createCardConcealer());
                 // Allow card to be revealed again.
-                card.card_reveal_allowed = true
+                card.card_reveal_allowed = true;
                 // Reset card color and hover properties
                 card.color = k.rgb(255, 255, 255);
                 card.onHoverUpdate(() => {
@@ -202,12 +204,10 @@ export default function initGame() {
             return card;
         }
     
-    
-    
-        let solvedPairsCnt = 0
-        let solvedPairsForWin = 1
-        let no_of_cards_selected = 0;
-        let selected_cards_tags = []
+        let solvedPairsCnt: number = 0;
+        let solvedPairsForWin: number = 1;
+        let no_of_cards_selected: number = 0;
+        let selected_cards_tags: { card_tag: string; unique_id_tag: string }[] = [];
         addCard(k.vec2(200, 200), "bobo", "8556f3");
         addCard(k.vec2(400, 200), "apple", "384s2s83");
         addCard(k.vec2(600, 200), "butterfly", "3828ks3");
@@ -224,8 +224,53 @@ export default function initGame() {
         addCard(k.vec2(400, 950), "apple", "382w83");
         addCard(k.vec2(600, 950), "meat", "38jk283");
         addCard(k.vec2(800, 950), "moon", "3828k3");
-        });
-    
-        k.go("memory_match_board");
-    
+
+        // const objs = [
+        //     "apple",
+        //     "bag",
+        //     "bean",
+        //     "bobo",
+        //     "butterfly",
+        //     "cloud",
+        //     "coin",
+        //     "egg",
+        //     "ghostiny",
+        //     "ghosty",
+        //     "gigagantrum",
+        //     "grapes",
+        //     "gun",
+        //     "heart",
+        //     "jump",
+        //     "key",
+        //     "lightning",
+        //     "mark",
+        //     "meat",
+        //     "moon",
+        //     "mushroom",
+        //     "note",
+        //     "pineapple",
+        //     "portal",
+        //     "spike",
+        //     "tga",
+        // ];
+        
+        // const limitNum = 4
+        // const limitDir = "rows"
+        // let x_pos_start = 200
+        // let x_pos = 0
+        // let rowPos = []
+        // if (limitDir === "rows") {
+        //     for(let x = 1; x <= limitNum; x++) {
+        //         x_pos = x_pos_start * x
+        //         rowPos.push(x_pos)
+        //     }
+        // }
+        // for (const obj of objs) {
+        //     k.loadSprite(obj, `/sprites/${obj}.png`);
+            
+        // }   
+
+    });
+
+    k.go("memory_match_board");
 }
