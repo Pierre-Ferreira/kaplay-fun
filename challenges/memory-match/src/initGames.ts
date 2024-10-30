@@ -4,27 +4,27 @@ export default function initGame() {
     const k = initKaplay();
     k.setBackground(135, 62, 132);
     k.loadSprite("cardConcealer", "./sprites/k.png");
-    k.loadSprite("bean", "./sprites/cards/bean.png");
-    k.loadSprite("apple", "./sprites/cards/apple.png");
-    k.loadSprite("bobo", "./sprites/cards/bobo.png");
-    k.loadSprite("butterfly", "./sprites/cards/butterfly.png");
-    k.loadSprite("meat", "./sprites/cards/meat.png");
-    k.loadSprite("note", "./sprites/cards/note.png");
-    k.loadSprite("grapes", "./sprites/cards/grapes.png");
-    k.loadSprite("moon", "./sprites/cards/moon.png");
+    // k.loadSprite("bean", "./sprites/cards/bean.png");
+    // k.loadSprite("apple", "./sprites/cards/apple.png");
+    // k.loadSprite("bobo", "./sprites/cards/bobo.png");
+    // k.loadSprite("butterfly", "./sprites/cards/butterfly.png");
+    // k.loadSprite("meat", "./sprites/cards/meat.png");
+    // k.loadSprite("note", "./sprites/cards/note.png");
+    // k.loadSprite("grapes", "./sprites/cards/grapes.png");
+    // k.loadSprite("moon", "./sprites/cards/moon.png");
 
     k.scene("memory_match_board", () => {
 
         // reset cursor to default on frame start for easier cursor management.
         k.onUpdate(() => k.setCursor("default"));
-    
+
         // Function to add a card.
-        function addCard(p: any, card_tag: string, unique_id_tag: string) {
+        function addCard(p: k.vec2, card_tag: string, unique_id_tag: string) {
             const card_solved: boolean = false;
             const card_reveal_allowed: boolean = true;
             // add a card object
             const card = k.add([
-                k.rect(160, 200, { radius: 8 }),
+                k.rect(110, 140, { radius: 8 }),
                 k.pos(p),
                 k.area(),
                 k.scale(1),
@@ -160,27 +160,27 @@ export default function initGame() {
                     // Pause for split seconds before resetting unmatched cards.
                     k.wait(0.6, () => {
                         // Reset first selected card.
-                        k.get(firstSelectedCardArrObj.unique_id_tag).forEach((e1: GameObj<any>) => {
+                        k.get(firstSelectedCardArrObj.unique_id_tag).forEach((e1: any) => {
                             resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
                         });
                         // Reset second selected card.
-                        k.get(secondSelectedCardArrObj.unique_id_tag).forEach((e2: GameObj<any>) => {
+                        k.get(secondSelectedCardArrObj.unique_id_tag).forEach((e2: any) => {
                             resetCard(e2, secondSelectedCardArrObj.unique_id_tag);
                         });
                     });
                 }
             }
     
-            function destroyChildrenOfGameObject(gameObj: GameObj<any>, tag: string) {
+            function destroyChildrenOfGameObject(gameObj: any, tag: string) {
                 // Loop through the game objects children and destroy those that match the tag.
-                gameObj.children.forEach((child: GameObj<any>) => {
+                gameObj.children.forEach((child: any) => {
                     if (child.is(tag)) {
                         child.destroy();
                     }
                 });
             }
     
-            function resetCard(card: GameObj<any>, tag: string) {
+            function resetCard(card: any, tag: string) {
                 // Destroy the card picture child.
                 destroyChildrenOfGameObject(card, tag);
                 // Add the card concealer child.
@@ -208,69 +208,127 @@ export default function initGame() {
         const solvedPairsForWin: number = 1;
         let no_of_cards_selected: number = 0;
         let selected_cards_tags: { card_tag: string; unique_id_tag: string }[] = [];
-        addCard(k.vec2(200, 200), "bobo", "8556f3");
-        addCard(k.vec2(400, 200), "apple", "384s2s83");
-        addCard(k.vec2(600, 200), "butterfly", "3828ks3");
-        addCard(k.vec2(800, 200), "meat", "3k828s3");
-        addCard(k.vec2(200, 450), "note", "382ds83");
-        addCard(k.vec2(400, 450), "grapes", "382w8k3");
-        addCard(k.vec2(600, 450), "moon", "382s83");
-        addCard(k.vec2(800, 450), "bean", "382a8k3");
-        addCard(k.vec2(200, 700), "butterfly", "382dy83");
-        addCard(k.vec2(400, 700), "grapes", "382yw83");
-        addCard(k.vec2(600, 700), "note", "38j283");
-        addCard(k.vec2(800, 700), "bobo", "3j82y83");
-        addCard(k.vec2(200, 950), "bean", "382d8j3");
-        addCard(k.vec2(400, 950), "apple", "382w83");
-        addCard(k.vec2(600, 950), "meat", "38jk283");
-        addCard(k.vec2(800, 950), "moon", "3828k3");
+        // addCard(k.vec2(200, 200), "bobo", "8556f3");
+        // addCard(k.vec2(340, 200), "apple", "384s2s83");
+        // addCard(k.vec2(480, 200), "butterfly", "3828ks3");
+        // addCard(k.vec2(620, 200), "meat", "3k828s3");
+        // addCard(k.vec2(200, 360), "note", "382ds83");
+        // addCard(k.vec2(340, 360), "grapes", "382w8k3");
+        // addCard(k.vec2(480, 360), "moon", "382s83");
+        // addCard(k.vec2(620, 360), "bean", "382a8k3");
+        // addCard(k.vec2(200, 700), "butterfly", "382dy83");
+        // addCard(k.vec2(400, 700), "grapes", "382yw83");
+        // addCard(k.vec2(600, 700), "note", "38j283");
+        // addCard(k.vec2(800, 700), "bobo", "3j82y83");
+        // addCard(k.vec2(200, 950), "bean", "382d8j3");
+        // addCard(k.vec2(400, 950), "apple", "382w83");
+        // addCard(k.vec2(600, 950), "meat", "38jk283");
+        // addCard(k.vec2(800, 950), "moon", "3828k3");
 
-        // const objs = [
-        //     "apple",
-        //     "bag",
-        //     "bean",
-        //     "bobo",
-        //     "butterfly",
-        //     "cloud",
-        //     "coin",
-        //     "egg",
-        //     "ghostiny",
-        //     "ghosty",
-        //     "gigagantrum",
-        //     "grapes",
-        //     "gun",
-        //     "heart",
-        //     "jump",
-        //     "key",
-        //     "lightning",
-        //     "mark",
-        //     "meat",
-        //     "moon",
-        //     "mushroom",
-        //     "note",
-        //     "pineapple",
-        //     "portal",
-        //     "spike",
-        //     "tga",
-        // ];
+        const images = [
+            "apple",
+            "bag",
+            "bean",
+            "bobo",
+            "butterfly",
+            "cloud",
+            "coin",
+            "egg",
+            "ghostiny",
+            // "ghosty",
+            // "gigagantrum",
+            // "grapes",
+            // "gun",
+            // "heart",
+            // "jump",
+            // "key",
+            // "lightning",
+            // "mark",
+            // "meat",
+            // "moon",
+            // "mushroom",
+            // "note",
+            // "pineapple",
+            // "portal",
+            // "spike",
+            // "tga",
+        ];
         
-        // const limitNum = 4
-        // const limitDir = "rows"
-        // let x_pos_start = 200
-        // let x_pos = 0
-        // let rowPos = []
-        // if (limitDir === "rows") {
-        //     for(let x = 1; x <= limitNum; x++) {
-        //         x_pos = x_pos_start * x
-        //         rowPos.push(x_pos)
-        //     }
-        // }
-        // for (const obj of objs) {
-        //     k.loadSprite(obj, `/sprites/${obj}.png`);
-            
-        // }   
+        interface Coordinates {
+            x : number,
+            y : number
+        }
+        const direction : "x-axis" | "y-axis" = "x-axis"
+        const maxCardsInDirection : number = 6
+        const x_offset : number = 140
+        const y_offset : number = 160
+        const x_start_pos : number = 200
+        let x_pos : number = 0
+        // const rowPosCnt : number = 0
+        const y_start_pos : number = 200
+        // const y_pos : number = 0
+        const noOfImages : number = images.length
+        const totalNoOfCards = noOfImages * 2
+        const rowPos : number[] = []
+        const xy_posArr : Coordinates[] = []
+        let x : number = 0 
+        let y : number = 0 
+        let coordinates : Coordinates = {x:0,y:0}
+        if (direction === "x-axis") {
+            for(let x = 0; x < maxCardsInDirection; x++) {
+                x_pos = x_start_pos + (x_offset * x)
+                rowPos.push(x_pos)
+            }
+            for(let p = 0; p <= totalNoOfCards; p++) {
+                x = rowPos[p % maxCardsInDirection]
+                y = ((Math.floor(p / maxCardsInDirection)) * y_offset) + y_start_pos
+                coordinates = {
+                    x: x,
+                    y: y
+                }
+                console.log(coordinates)
+                xy_posArr.push(coordinates)
+            }
+            console.log(xy_posArr)
+        }
+        let pickedCoordinates = []
+        for (const image of images) {
+            // k.loadSprite(image, `/sprites/${image}.png`);
+            k.loadSprite(image, `./sprites/cards/${image}.png`);
+
+            pickedCoordinates = pickAndRemoveTwo(xy_posArr)
+            console.log(pickedCoordinates)
+            addCard(k.vec2(pickedCoordinates[0].x, pickedCoordinates[0].y), image, crypto.randomUUID());
+            addCard(k.vec2(pickedCoordinates[1].x, pickedCoordinates[1].y), image, crypto.randomUUID());
+        }   
 
     });
+
+    function pickAndRemoveTwo(arr) {
+        let pickedItems = [];
+
+        if (arr.length <= 2) {
+        //   throw new Error("Array needs to have at least two elements.");
+            pickedItems = [arr[0], arr[1]];
+            return pickedItems;
+        }
+      
+        // Get two unique random indices
+        const index1 = Math.floor(Math.random() * arr.length);
+        let index2;
+        do {
+          index2 = Math.floor(Math.random() * arr.length);
+        } while (index2 === index1);
+      
+        // Get the elements at these indices
+        pickedItems = [arr[index1], arr[index2]];
+      
+        // Remove items from array by index, starting from the larger index to avoid shifting
+        arr.splice(Math.max(index1, index2), 1);
+        arr.splice(Math.min(index1, index2), 1);
+      
+        return pickedItems;
+      }
 
     k.go("memory_match_board");
 }
