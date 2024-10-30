@@ -208,7 +208,94 @@ export default function initGame() {
             return card;
         }
     
-        const images = [
+        // Function to setup x-coordinates of card positions.
+        interface x_CoordinatesOfCardsSetupOptions {
+            maxCardsInRow: number;
+            x_start_pos: number;
+            x_offset: number;
+        }
+
+        function x_CoordinatesOfCardsSetup ({maxCardsInRow, x_start_pos, x_offset}: x_CoordinatesOfCardsSetupOptions) : number[] {
+            let x_pos : number = 0
+            const x_CoordinatesArray : number[] = []
+            for (let x = 0; x < maxCardsInRow; x++) {
+                x_pos = x_start_pos + (x_offset * x)
+                x_CoordinatesArray.push(x_pos)
+            }
+            return x_CoordinatesArray
+        }
+        
+        // Function to create xy-coordinated of all the cards
+        interface xy_CooridinatesOfCardsSetupOptions {
+            totalNoOfCards: number;
+            maxCardsInRow: number;
+            x_CoordinatesArray: number[];
+            y_start_pos: number;
+            y_offset: number;
+        }
+
+        function xy_CooridinatesOfCardsSetup({x_CoordinatesArray, totalNoOfCards, maxCardsInRow, y_start_pos, y_offset} : xy_CooridinatesOfCardsSetupOptions ) : Coordinates[]{
+            let coordinates : Coordinates = {x: 0, y: 0}
+            let y : number = 0 
+            let x : number = 0 
+            const xy_posArr : Coordinates[] = [] 
+            for (let p = 0; p < totalNoOfCards; p++) {
+                x = x_CoordinatesArray[p % maxCardsInRow];
+                y = ((Math.floor(p / maxCardsInRow)) * y_offset) + y_start_pos;
+                coordinates = {
+                    x,
+                    y
+                };
+                // console.log(coordinates)
+                xy_posArr.push(coordinates);
+            }
+            return xy_posArr;
+        }
+
+        // Function to display Card on screen
+        interface displayCardsOptions {
+            images: string[];
+            xy_PostionArray: Coordinates[];
+        }
+        function displayCards({images, xy_PostionArray} : displayCardsOptions) : void {
+            let pickedCoordinates = []
+            for (const image of images) {
+                k.loadSprite(image, `./sprites/cards/${image}.png`);
+                pickedCoordinates = pickAndRemoveTwo(xy_PostionArray)
+                //console.log(pickedCoordinates)
+                addCard(k.vec2(pickedCoordinates[0].x, pickedCoordinates[0].y), image, crypto.randomUUID());
+                addCard(k.vec2(pickedCoordinates[1].x, pickedCoordinates[1].y), image, crypto.randomUUID());
+            }   
+        }
+        
+
+        function pickAndRemoveTwo(arr: Coordinates[]) {
+            let pickedItems = [];
+    
+            if (arr.length <= 2) {
+            //   throw new Error("Array needs to have at least two elements.");
+                pickedItems = [arr[0], arr[1]];
+                return pickedItems;
+            }
+          
+            // Get two unique random indices
+            const index1 = Math.floor(Math.random() * arr.length);
+            let index2;
+            do {
+              index2 = Math.floor(Math.random() * arr.length);
+            } while (index2 === index1);
+          
+            // Get the elements at these indices
+            pickedItems = [arr[index1], arr[index2]];
+          
+            // Remove items from array by index, starting from the larger index to avoid shifting
+            arr.splice(Math.max(index1, index2), 1);
+            arr.splice(Math.min(index1, index2), 1);
+          
+            return pickedItems;
+        }
+
+        const images: string[] = [
             "apple",
             "bag",
             "bean",
@@ -241,77 +328,20 @@ export default function initGame() {
         const solvedPairsForWin: number = images.length;
         let no_of_cards_selected: number = 0;
         let selected_cards_tags: { card_tag: string; unique_id_tag: string }[] = [];
+
         interface Coordinates {
             x : number,
             y : number
         }
-        const direction : "x-axis" | "y-axis" = "x-axis"
-        const maxCardsInDirection : number = 6
-        const x_offset : number = 140
-        const y_offset : number = 160
-        const x_start_pos : number = 200
-        let x_pos : number = 0
-        // const rowPosCnt : number = 0
-        const y_start_pos : number = 200
-        // const y_pos : number = 0
+        const maxCardsInRow: number =  5
+        // Setup the x-coordinates of the card positions.
+        const x_CoordinatesArr: number[] = x_CoordinatesOfCardsSetup({maxCardsInRow, x_start_pos: 200, x_offset: 140})
         const noOfImages : number = images.length
-        const totalNoOfCards = noOfImages * 2
-        const rowPos : number[] = []
-        const xy_posArr : Coordinates[] = []
-        let x : number = 0 
-        let y : number = 0 
-        let coordinates : Coordinates = {x:0,y:0}
-        if (direction === "x-axis") {
-            for(let x = 0; x < maxCardsInDirection; x++) {
-                x_pos = x_start_pos + (x_offset * x)
-                rowPos.push(x_pos)
-            }
-            for(let p = 0; p < totalNoOfCards; p++) {
-                x = rowPos[p % maxCardsInDirection]
-                y = ((Math.floor(p / maxCardsInDirection)) * y_offset) + y_start_pos
-                coordinates = {
-                    x: x,
-                    y: y
-                }
-                // console.log(coordinates)
-                xy_posArr.push(coordinates)
-            }
-            // console.log(xy_posArr)
-        }
-        let pickedCoordinates = []
-        for (const image of images) {
-            k.loadSprite(image, `./sprites/cards/${image}.png`);
-            pickedCoordinates = pickAndRemoveTwo(xy_posArr)
-            //console.log(pickedCoordinates)
-            addCard(k.vec2(pickedCoordinates[0].x, pickedCoordinates[0].y), image, crypto.randomUUID());
-            addCard(k.vec2(pickedCoordinates[1].x, pickedCoordinates[1].y), image, crypto.randomUUID());
-        }   
-
-        function pickAndRemoveTwo(arr: Coordinates[]) {
-            let pickedItems = [];
-    
-            if (arr.length <= 2) {
-            //   throw new Error("Array needs to have at least two elements.");
-                pickedItems = [arr[0], arr[1]];
-                return pickedItems;
-            }
-          
-            // Get two unique random indices
-            const index1 = Math.floor(Math.random() * arr.length);
-            let index2;
-            do {
-              index2 = Math.floor(Math.random() * arr.length);
-            } while (index2 === index1);
-          
-            // Get the elements at these indices
-            pickedItems = [arr[index1], arr[index2]];
-          
-            // Remove items from array by index, starting from the larger index to avoid shifting
-            arr.splice(Math.max(index1, index2), 1);
-            arr.splice(Math.min(index1, index2), 1);
-          
-            return pickedItems;
-          }
+        // Setup the xy coordinates of all the card.
+        const xy_PostionArray: Coordinates[] = xy_CooridinatesOfCardsSetup({totalNoOfCards: noOfImages * 2, maxCardsInRow, x_CoordinatesArray: x_CoordinatesArr, y_start_pos: 200, y_offset: 160})
+        // Display all the cards.
+        displayCards({images, xy_PostionArray})
+        
     });
 
 
