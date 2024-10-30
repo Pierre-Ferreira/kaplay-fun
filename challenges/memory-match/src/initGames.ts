@@ -1,3 +1,4 @@
+import { GameObj, Vec2 } from "kaplay";
 import initKaplay from "./kaplayCtx";
 
 export default function initGame() {
@@ -19,7 +20,7 @@ export default function initGame() {
         k.onUpdate(() => k.setCursor("default"));
 
         // Function to add a card.
-        function addCard(p: any, card_tag: string, unique_id_tag: string) {
+        function addCard(p: Vec2, card_tag: string, unique_id_tag: string) {
             const card_solved: boolean = false;
             const card_reveal_allowed: boolean = true;
             // add a card object
@@ -146,7 +147,7 @@ export default function initGame() {
                     //console.log("MATCHING!!!");
                     // MATCHING cards.
                     solvedPairsCnt += 1;
-                    k.get(firstSelectedCardArrObj.card_tag).forEach((e: any) => {
+                    k.get(firstSelectedCardArrObj.card_tag).forEach((e: GameObj) => {
                         k.addKaboom(e.pos.sub(0, 50));
                         e.card_solved = true;
                         e.color = k.YELLOW;
@@ -164,27 +165,27 @@ export default function initGame() {
                     // Pause for split seconds before resetting unmatched cards.
                     k.wait(0.6, () => {
                         // Reset first selected card.
-                        k.get(firstSelectedCardArrObj.unique_id_tag).forEach((e1: any) => {
+                        k.get(firstSelectedCardArrObj.unique_id_tag).forEach((e1: GameObj) => {
                             resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
                         });
                         // Reset second selected card.
-                        k.get(secondSelectedCardArrObj.unique_id_tag).forEach((e2: any) => {
+                        k.get(secondSelectedCardArrObj.unique_id_tag).forEach((e2: GameObj) => {
                             resetCard(e2, secondSelectedCardArrObj.unique_id_tag);
                         });
                     });
                 }
             }
     
-            function destroyChildrenOfGameObject(gameObj: any, tag: string) {
+            function destroyChildrenOfGameObject(gameObj: GameObj, tag: string) {
                 // Loop through the game objects children and destroy those that match the tag.
-                gameObj.children.forEach((child: any) => {
+                gameObj.children.forEach((child: GameObj) => {
                     if (child.is(tag)) {
                         child.destroy();
                     }
                 });
             }
     
-            function resetCard(card: any, tag: string) {
+            function resetCard(card: GameObj, tag: string) {
                 // Destroy the card picture child.
                 destroyChildrenOfGameObject(card, tag);
                 // Add the card concealer child.
