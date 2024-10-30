@@ -19,7 +19,7 @@ export default function initGame() {
         k.onUpdate(() => k.setCursor("default"));
 
         // Function to add a card.
-        function addCard(p: k.vec2, card_tag: string, unique_id_tag: string) {
+        function addCard(p: any, card_tag: string, unique_id_tag: string) {
             const card_solved: boolean = false;
             const card_reveal_allowed: boolean = true;
             // add a card object
@@ -93,7 +93,7 @@ export default function initGame() {
                     }
                     // If the same card was not selected, then continue.
                     if (notSameCardSelected) {
-                        console.log("Update selected card!");
+                        //console.log("Update selected card!");
                         // Remove card concealer child.
                         destroyChildrenOfGameObject(card, "card-concealer");
                         // Display the card picture child.
@@ -119,14 +119,18 @@ export default function initGame() {
                         no_of_cards_selected += 1;
                         // Check if two cards have been selected.
                         if (no_of_cards_selected >= 2) {
-                            console.log("Two selected");
+                            //console.log("Two selected");
                             // Check if the two cards match. 
                             checkCardMatch();
                             no_of_cards_selected = 0;
                             selected_cards_tags = [];
                         }
+                        // Check if the game has been completed.
+                        if (solvedPairsCnt === solvedPairsForWin) {
+                            console.log("GAME COMPLETED!");
+                        }
                     }
-                    console.log(selected_cards_tags);
+                    //console.log(selected_cards_tags);
                 }
             });
     
@@ -139,7 +143,7 @@ export default function initGame() {
     
                 // Check if the first card and second card selected have matching tags.
                 if (firstSelectedCardArrObj.card_tag === secondSelectedCardArrObj.card_tag) {
-                    console.log("MATCHING!!!");
+                    //console.log("MATCHING!!!");
                     // MATCHING cards.
                     solvedPairsCnt += 1;
                     k.get(firstSelectedCardArrObj.card_tag).forEach((e: any) => {
@@ -156,7 +160,7 @@ export default function initGame() {
                         });
                     });
                 } else {
-                    console.log("NOT MATCHING!!!");
+                    //console.log("NOT MATCHING!!!");
                     // Pause for split seconds before resetting unmatched cards.
                     k.wait(0.6, () => {
                         // Reset first selected card.
@@ -204,37 +208,16 @@ export default function initGame() {
             return card;
         }
     
-        let solvedPairsCnt: number = 0;
-        const solvedPairsForWin: number = 1;
-        let no_of_cards_selected: number = 0;
-        let selected_cards_tags: { card_tag: string; unique_id_tag: string }[] = [];
-        // addCard(k.vec2(200, 200), "bobo", "8556f3");
-        // addCard(k.vec2(340, 200), "apple", "384s2s83");
-        // addCard(k.vec2(480, 200), "butterfly", "3828ks3");
-        // addCard(k.vec2(620, 200), "meat", "3k828s3");
-        // addCard(k.vec2(200, 360), "note", "382ds83");
-        // addCard(k.vec2(340, 360), "grapes", "382w8k3");
-        // addCard(k.vec2(480, 360), "moon", "382s83");
-        // addCard(k.vec2(620, 360), "bean", "382a8k3");
-        // addCard(k.vec2(200, 700), "butterfly", "382dy83");
-        // addCard(k.vec2(400, 700), "grapes", "382yw83");
-        // addCard(k.vec2(600, 700), "note", "38j283");
-        // addCard(k.vec2(800, 700), "bobo", "3j82y83");
-        // addCard(k.vec2(200, 950), "bean", "382d8j3");
-        // addCard(k.vec2(400, 950), "apple", "382w83");
-        // addCard(k.vec2(600, 950), "meat", "38jk283");
-        // addCard(k.vec2(800, 950), "moon", "3828k3");
-
         const images = [
             "apple",
             "bag",
             "bean",
             "bobo",
             "butterfly",
-            "cloud",
-            "coin",
-            "egg",
-            "ghostiny",
+            // "cloud",
+            // "coin",
+            // "egg",
+            // "ghostiny",
             // "ghosty",
             // "gigagantrum",
             // "grapes",
@@ -254,6 +237,10 @@ export default function initGame() {
             // "tga",
         ];
         
+        let solvedPairsCnt: number = 0;
+        const solvedPairsForWin: number = images.length;
+        let no_of_cards_selected: number = 0;
+        let selected_cards_tags: { card_tag: string; unique_id_tag: string }[] = [];
         interface Coordinates {
             x : number,
             y : number
@@ -279,56 +266,54 @@ export default function initGame() {
                 x_pos = x_start_pos + (x_offset * x)
                 rowPos.push(x_pos)
             }
-            for(let p = 0; p <= totalNoOfCards; p++) {
+            for(let p = 0; p < totalNoOfCards; p++) {
                 x = rowPos[p % maxCardsInDirection]
                 y = ((Math.floor(p / maxCardsInDirection)) * y_offset) + y_start_pos
                 coordinates = {
                     x: x,
                     y: y
                 }
-                console.log(coordinates)
+                // console.log(coordinates)
                 xy_posArr.push(coordinates)
             }
-            console.log(xy_posArr)
+            // console.log(xy_posArr)
         }
         let pickedCoordinates = []
         for (const image of images) {
-            // k.loadSprite(image, `/sprites/${image}.png`);
             k.loadSprite(image, `./sprites/cards/${image}.png`);
-
             pickedCoordinates = pickAndRemoveTwo(xy_posArr)
-            console.log(pickedCoordinates)
+            //console.log(pickedCoordinates)
             addCard(k.vec2(pickedCoordinates[0].x, pickedCoordinates[0].y), image, crypto.randomUUID());
             addCard(k.vec2(pickedCoordinates[1].x, pickedCoordinates[1].y), image, crypto.randomUUID());
         }   
 
+        function pickAndRemoveTwo(arr: Coordinates[]) {
+            let pickedItems = [];
+    
+            if (arr.length <= 2) {
+            //   throw new Error("Array needs to have at least two elements.");
+                pickedItems = [arr[0], arr[1]];
+                return pickedItems;
+            }
+          
+            // Get two unique random indices
+            const index1 = Math.floor(Math.random() * arr.length);
+            let index2;
+            do {
+              index2 = Math.floor(Math.random() * arr.length);
+            } while (index2 === index1);
+          
+            // Get the elements at these indices
+            pickedItems = [arr[index1], arr[index2]];
+          
+            // Remove items from array by index, starting from the larger index to avoid shifting
+            arr.splice(Math.max(index1, index2), 1);
+            arr.splice(Math.min(index1, index2), 1);
+          
+            return pickedItems;
+          }
     });
 
-    function pickAndRemoveTwo(arr) {
-        let pickedItems = [];
-
-        if (arr.length <= 2) {
-        //   throw new Error("Array needs to have at least two elements.");
-            pickedItems = [arr[0], arr[1]];
-            return pickedItems;
-        }
-      
-        // Get two unique random indices
-        const index1 = Math.floor(Math.random() * arr.length);
-        let index2;
-        do {
-          index2 = Math.floor(Math.random() * arr.length);
-        } while (index2 === index1);
-      
-        // Get the elements at these indices
-        pickedItems = [arr[index1], arr[index2]];
-      
-        // Remove items from array by index, starting from the larger index to avoid shifting
-        arr.splice(Math.max(index1, index2), 1);
-        arr.splice(Math.min(index1, index2), 1);
-      
-        return pickedItems;
-      }
 
     k.go("memory_match_board");
 }
