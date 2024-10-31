@@ -14,7 +14,7 @@ export default function initGame() {
     // k.loadSprite("grapes", "./sprites/cards/grapes.png");
     // k.loadSprite("moon", "./sprites/cards/moon.png");
 
-    k.scene("memory_match_board", () => {
+    k.scene("memory_match_game_1", () => {
 
         // reset cursor to default on frame start for easier cursor management.
         k.onUpdate(() => k.setCursor("default"));
@@ -295,6 +295,7 @@ export default function initGame() {
           
             return pickedItems;
         }
+        
 
         const images: string[] = [
             "apple",
@@ -305,6 +306,7 @@ export default function initGame() {
             "eben-etzebeth",
             "siya-kolisi",
             "dolphin",
+            "michael_scott",
             // "bobo",
             // "cloud",
             // "natal-sharks",
@@ -350,5 +352,5 @@ export default function initGame() {
     });
 
 
-    k.go("memory_match_board");
+    k.go("memory_match_game_1");
 }
