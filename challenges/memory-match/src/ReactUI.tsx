@@ -1,5 +1,3 @@
 export default function ReactUI() {
-    return <div>
-
-    </div>;
+	return <div></div>;
 }
