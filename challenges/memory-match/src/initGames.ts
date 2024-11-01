@@ -1,5 +1,6 @@
 import { GameObj, Vec2 } from "kaplay";
 import initKaplay from "./kaplayCtx";
+import { store, cntDoomCounterAtom } from "./store";
 
 export default function initGame() {
 	const k = initKaplay();
@@ -154,6 +155,9 @@ export default function initGame() {
 					});
 				} else {
 					//console.log("NOT MATCHING!!!");
+					//Update Doom Counter.
+					cntDoomCounter += 1;
+					store.set(cntDoomCounterAtom, cntDoomCounter);
 					// Pause for split seconds before resetting unmatched cards.
 					k.wait(0.6, () => {
 						// Reset first selected card.
@@ -346,6 +350,8 @@ export default function initGame() {
 			// "tga",
 		];
 
+		// Initiate game variables.
+		let cntDoomCounter: number = 0;
 		let solvedPairsCnt: number = 0;
 		const solvedPairsForWin: number = images.length;
 		let no_of_cards_selected: number = 0;
