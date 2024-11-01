@@ -6,17 +6,28 @@ import initGame from "./initGames.ts";
 import { Provider } from "jotai";
 import { store } from "./store.ts";
 
-const ui = document.getElementById(".ui");
+// const ui: HTMLElement = document.querySelector(".ui");
+// const scale: string =
+// 	Math
+// 		.min
+// 		ui.parentElement.offsetWidth / ui.offsetWidth,
+// 		ui.parentElement.offsetHeight / ui.offsetHeight
+// 		() + "";
+// new ResizeObserver(() => {
+// 	document.documentElement.style.setProperty("--scale", scale);
+// }).observe(ui.parentElement);
+const ui = document.querySelector(".ui") as HTMLElement | null;
 
-new ResizeObserver(() => {
-	document.documentElement.style.setProperty(
-		"--scale",
-		Math.min(
-			ui.parentElement.offsetWidth / ui.offsetWidth,
-			ui.parentElement.offsetHeight / ui.offsetHeight
-		)
-	);
-}).observe(ui.parentElement);
+if (ui && ui.parentElement) {
+	const scale = Math.min(
+		ui.parentElement.offsetWidth / ui.offsetWidth,
+		ui.parentElement.offsetHeight / ui.offsetHeight
+	).toString(); // Convert result to a string
+
+	new ResizeObserver(() => {
+		document.documentElement.style.setProperty("--scale", scale);
+	}).observe(ui.parentElement);
+}
 
 createRoot(document.getElementById("ui")!).render(
 	<StrictMode>

@@ -156,7 +156,7 @@ export default function initGame() {
 				} else {
 					//console.log("NOT MATCHING!!!");
 					//Update Doom Counter.
-					cntDoomCounter += 1;
+					cntDoomCounter -= 1;
 					store.set(cntDoomCounterAtom, cntDoomCounter);
 					// Pause for split seconds before resetting unmatched cards.
 					k.wait(0.6, () => {
@@ -351,7 +351,7 @@ export default function initGame() {
 		];
 
 		// Initiate game variables.
-		let cntDoomCounter: number = 0;
+		let cntDoomCounter: number = 9;
 		let solvedPairsCnt: number = 0;
 		const solvedPairsForWin: number = images.length;
 		let no_of_cards_selected: number = 0;
