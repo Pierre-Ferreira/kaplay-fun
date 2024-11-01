@@ -3,10 +3,26 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import ReactUI from "./ReactUI.tsx";
 import initGame from "./initGames.ts";
+import { Provider } from "jotai";
+import { store } from "./store.ts";
+
+const ui = document.getElementById(".ui");
+
+new ResizeObserver(() => {
+	document.documentElement.style.setProperty(
+		"--scale",
+		Math.min(
+			ui.parentElement.offsetWidth / ui.offsetWidth,
+			ui.parentElement.offsetHeight / ui.offsetHeight
+		)
+	);
+}).observe(ui.parentElement);
 
 createRoot(document.getElementById("ui")!).render(
 	<StrictMode>
-		<ReactUI />
+		<Provider store={store}>
+			<ReactUI />
+		</Provider>
 	</StrictMode>
 );
 

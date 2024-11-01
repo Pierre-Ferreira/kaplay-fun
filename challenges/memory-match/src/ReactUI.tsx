@@ -1,3 +1,9 @@
+import DoomCounter from "./ReactComponents/DoomCounter";
+
 export default function ReactUI() {
-	return <div></div>;
+	return (
+		<div>
+			<DoomCounter />
+		</div>
+	);
 }
