@@ -36,28 +36,26 @@ export default function initGame() {
 			});
 		}
 
-		// Function to a game board.
-		function addGameBoard(): void {
-			k.add([
-				k.rect(900, 700, { radius: 8 }),
-				k.pos(500, 500),
-				k.area(),
-				k.body,
-				k.scale(1),
-				k.anchor("center"),
-				k.outline(4, k.YELLOW),
-				k.color(0, 0, 0),
-			]);
-		}
-		const gameBoard = addGameBoard();
+		// Create a game board.
+		const gameBoard = k.add([
+			k.rect(900, 700, { radius: 8 }),
+			k.pos(500, 500),
+			k.area(),
+			k.body(),
+			k.scale(1),
+			k.anchor("center"),
+			k.outline(4, k.YELLOW),
+			k.color(0, 0, 0),
+		]);
+
 		// Function to add a card.
 		function addCard(p: Vec2, card_tag: string, unique_id_tag: string): void {
 			const card_solved: boolean = false;
 			const card_reveal_allowed: boolean = true;
 			// add a card object
-			const card: GameObj = k.add([
+			const card: GameObj = gameBoard.add([
 				k.rect(110, 140, { radius: 8 }),
-				k.pos(p),
+				k.pos(gameBoard.pos.x - p.x, gameBoard.pos.y - p.y),
 				k.area(),
 				k.scale(1),
 				k.anchor("center"),
@@ -250,7 +248,7 @@ export default function initGame() {
 		}
 
 		addInfoBoard();
-		addGameBoard();
+		// addGameBoard();
 
 		// Function to setup x-coordinates of card positions.
 		interface x_CoordinatesOfCardsSetupOptions {
@@ -404,7 +402,7 @@ export default function initGame() {
 			x: number;
 			y: number;
 		}
-		const maxCardsInRow: number = 5;
+		const maxCardsInRow: number = 6;
 		// Setup the x-coordinates of the card positions.
 		const x_CoordinatesArr: number[] = x_CoordinatesOfCardsSetup({
 			maxCardsInRow,
