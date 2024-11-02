@@ -5,7 +5,7 @@ import { store, cntDoomCounterAtom } from "./store";
 export default function initGame() {
 	const k = initKaplay();
 	k.setBackground(135, 62, 132);
-	k.loadSprite("cardConcealer", "./sprites/k.png");
+	k.loadSprite("cardConcealer", "./sprites/cluesified-icon4b.png");
 
 	k.scene("memory_match_game_1", () => {
 		// reset cursor to default on frame start for easier cursor management.
@@ -24,7 +24,7 @@ export default function initGame() {
 			]);
 			const doomCounterText: GameObj = doomCounter.add([
 				k.text("DOOM IN:", {
-					font: "starborn",
+					// font: "starborn",
 				}),
 				k.anchor("center"),
 			]);
