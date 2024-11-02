@@ -5,7 +5,8 @@ import { store, cntDoomCounterAtom } from "./store";
 export default function initGame() {
 	const k = initKaplay();
 	k.setBackground(135, 62, 132);
-	k.loadSprite("cardConcealer", "./sprites/cluesified-icon4b.png");
+	k.loadSprite("cardConcealer", "/icons/cluesified-icon-main.png");
+	// k.loadFont("starborn", "happy_monday.tff");
 
 	k.scene("memory_match_game_1", () => {
 		// reset cursor to default on frame start for easier cursor management.
@@ -24,12 +25,14 @@ export default function initGame() {
 			]);
 			const doomCounterText: GameObj = doomCounter.add([
 				k.text("DOOM IN:", {
+					size: 30,
 					// font: "starborn",
 				}),
 				k.anchor("center"),
 			]);
 			doomCounterText.onUpdate(() => {
 				doomCounterText.text = `DOOM IN: ${cntDoomCounter}`;
+				// doomCounterText.font = "starborn";
 			});
 		}
 
