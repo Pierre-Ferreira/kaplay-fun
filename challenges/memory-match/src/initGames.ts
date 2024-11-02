@@ -359,40 +359,6 @@ export default function initGame() {
 			return pickedItems;
 		}
 
-		const images: string[] = [
-			"apple",
-			"bag",
-			"bean",
-			"palm_tree",
-			"gigagantrum",
-			"eben-etzebeth",
-			"siya-kolisi",
-			"dolphin",
-			"michael_scott",
-			// "bobo",
-			// "cloud",
-			// "natal-sharks",
-			// "coin",
-			// "egg",
-			// "ghostiny",
-			// "ghosty",
-			// "grapes",
-			// "gun",
-			// "heart",
-			// "jump",
-			// "key",
-			// "lightning",
-			// "mark",
-			// "meat",
-			// "moon",
-			// "mushroom",
-			// "note",
-			// "pineapple",
-			// "portal",
-			// "spike",
-			// "tga",
-		];
-
 		// Initiate game variables.
 		let cntDoomCounter: number = 9;
 		let solvedPairsCnt: number = 0;
@@ -404,7 +370,7 @@ export default function initGame() {
 			x: number;
 			y: number;
 		}
-		const maxCardsInRow: number = 5;
+		const maxCardsInRow: number = 4;
 		// Setup the x-coordinates of the card positions.
 		const x_CoordinatesArr: number[] = x_CoordinatesOfCardsSetup({
 			maxCardsInRow,
@@ -424,5 +390,74 @@ export default function initGame() {
 		displayCards({ images, xy_PostionArray });
 	});
 
-	k.go("memory_match_game_1");
+	const images: string[] = [
+		"apple",
+		"bag",
+		"bean",
+		"palm_tree",
+		"gigagantrum",
+		"eben-etzebeth",
+		"siya-kolisi",
+		"dolphin",
+		// "michael_scott",
+		// "bobo",
+		// "cloud",
+		// "natal-sharks",
+		// "coin",
+		// "egg",
+		// "ghostiny",
+		// "ghosty",
+		// "grapes",
+		// "gun",
+		// "heart",
+		// "jump",
+		// "key",
+		// "lightning",
+		// "mark",
+		// "meat",
+		// "moon",
+		// "mushroom",
+		// "note",
+		// "pineapple",
+		// "portal",
+		// "spike",
+		// "tga",
+	];
+
+	const maxCardsInRow: number = 4;
+	const cardSize = k.vec2(110, 140);
+	const infoBoardPos = k.vec2(500, 65);
+	const infoBoardSize = k.vec2(900, 100);
+	const gameBoardPos = k.vec2(500, 500);
+	const gameBoardSize = k.vec2(900, 700);
+	const x_spaces = 30;
+	const y_spaces = 20;
+	const totalCardRows: number = Math.floor((images.length * 2) / maxCardsInRow);
+	console.log("totalCardRows: ", totalCardRows);
+	const cardsBoardWidth = maxCardsInRow * (cardSize.x + x_spaces) - x_spaces;
+	const cardsBoardHeight = totalCardRows * (cardSize.y + y_spaces) - y_spaces;
+	console.log("cardsBoardHeight: ", cardsBoardHeight);
+	// const infoBoardSize = k.vec2(cardsBoardWidth, 100);
+	// const cardsBoardPos = k.vec2(
+	// 	infoBoardPos.x,
+	// 	infoBoardPos.y + infoBoardSize.y + cardsBoardHeight / 2 - 30
+	// );
+	const cardsBoardSize = k.vec2(cardsBoardWidth, cardsBoardHeight);
+	// const x_start_pos = cardsBoardPos.x + x_spaces;
+	// const y_start_pos = cardsBoardPos.y + y_spaces;
+	// console.log("x_start_pos: ", x_start_pos);
+	// console.log("y_start_pos: ", y_start_pos);
+
+	k.go(
+		"memory_match_game_1",
+		infoBoardPos,
+		infoBoardSize,
+		gameBoardPos,
+		gameBoardSize,
+		cardsBoardSize,
+		cardSize
+		// x_start_pos,
+		// y_start_pos
+	);
+	// k.go("memory_match_game_1");
 }
