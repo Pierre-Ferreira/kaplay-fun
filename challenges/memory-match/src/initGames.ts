@@ -11,12 +11,34 @@ export default function initGame() {
 		// reset cursor to default on frame start for easier cursor management.
 		k.onUpdate(() => k.setCursor("default"));
 
+		// Function to add the Doom Counter
+		function addDoomCounter(): void {
+			const doomCounter: GameObj = k.add([
+				k.rect(900, 100, { radius: 8 }),
+				k.pos(500, 65),
+				k.area(),
+				k.scale(1),
+				k.anchor("center"),
+				k.outline(4, k.YELLOW),
+				k.color(0, 0, 0),
+			]);
+			const doomCounterText: GameObj = doomCounter.add([
+				k.text("DOOM IN:", {
+					font: "starborn",
+				}),
+				k.anchor("center"),
+			]);
+			doomCounterText.onUpdate(() => {
+				doomCounterText.text = `DOOM IN: ${cntDoomCounter}`;
+			});
+		}
+
 		// Function to add a card.
-		function addCard(p: Vec2, card_tag: string, unique_id_tag: string) {
+		function addCard(p: Vec2, card_tag: string, unique_id_tag: string): void {
 			const card_solved: boolean = false;
 			const card_reveal_allowed: boolean = true;
 			// add a card object
-			const card = k.add([
+			const card: GameObj = k.add([
 				k.rect(110, 140, { radius: 8 }),
 				k.pos(p),
 				k.area(),
@@ -206,8 +228,10 @@ export default function initGame() {
 				});
 			}
 
-			return card;
+			// return card;
 		}
+
+		addDoomCounter();
 
 		// Function to setup x-coordinates of card positions.
 		interface x_CoordinatesOfCardsSetupOptions {

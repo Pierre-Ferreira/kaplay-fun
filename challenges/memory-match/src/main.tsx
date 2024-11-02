@@ -6,6 +6,7 @@ import initGame from "./initGames.ts";
 import { Provider } from "jotai";
 import { store } from "./store.ts";
 
+// Calculate and set the scale of ui div.
 const ui = document.getElementById("ui") as HTMLElement | null;
 if (ui && ui.parentElement) {
 	const scale = Math.min(

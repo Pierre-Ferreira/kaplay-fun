@@ -7,7 +7,7 @@
 	background-color: black;
 	overflow: hidden;
 	border-radius: 12px;
-	font-family: "gameboy";
+	font-family: "starborn";
 }
 
 .text-box > p {
@@ -15,6 +15,6 @@
 	margin-bottom: 12px;
 	margin-left: 64px;
 	margin-right: 64px;
-	font-size: 32px;
+	font-size: 60px;
 	color: var(--font-color);
 }

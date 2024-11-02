@@ -5,8 +5,8 @@
 }
 
 @font-face {
-	font-family: "gameboy";
-	src: url(/gameboy.ttf);
+	font-family: "starborn";
+	src: url(fonts/starborn.ttf);
 }
 
 :root {
