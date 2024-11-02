@@ -9,7 +9,7 @@ export default function initGame() {
 	// k.loadFont("samarin", "fonts/samarin.tff");
 
 	k.scene(
-		"memory_match_game_1",
+		"memory_match_game",
 		(
 			maxCardsInRow: number,
 			infoBoardPos: Vec2,
@@ -24,57 +24,49 @@ export default function initGame() {
 			// reset cursor to default on frame start for easier cursor management.
 			k.onUpdate(() => k.setCursor("default"));
 
-			// Function to add the Info Board.
-			function addInfoBoard(): void {
-				const infoBoard: GameObj = k.add([
-					k.rect(infoBoardSize.x, infoBoardSize.y, { radius: 8 }),
-					k.pos(infoBoardPos),
-					k.area(),
-					k.scale(1),
-					k.anchor("center"),
-					k.outline(4, k.YELLOW),
-					k.color(0, 0, 0),
-					"infoboard",
-				]);
-				const doomCounter: GameObj = infoBoard.add([
-					k.text("DOOM IN:", {
-						size: 30,
-						// font: "samarin",
-					}),
-					k.anchor("center"),
-				]);
-				doomCounter.onUpdate(() => {
-					doomCounter.text = `DOOM IN: ${cntDoomCounter}`;
-					// doomCounter.font = "starborn";
-				});
-			}
-
-			// Create a game board.
-			const gameBoard = k.add([
-				k.rect(gameBoardSize.x, gameBoardSize.y, { radius: 8 }),
-				k.pos(gameBoardPos),
+			// Add the Infoboard.
+			const infoBoard: GameObj = k.add([
+				k.rect(infoBoardSize.x, infoBoardSize.y, { radius: 8 }),
+				k.pos(infoBoardPos),
 				k.area(),
-				// k.body(),
 				k.scale(1),
 				k.anchor("center"),
 				k.outline(4, k.YELLOW),
 				k.color(0, 0, 0),
-				k.z(1),
+				"infoboard",
+			]);
+			const doomCounter: GameObj = infoBoard.add([
+				k.text("DOOM IN:", {
+					size: 30,
+					// font: "samarin",
+				}),
+				k.anchor("center"),
+			]);
+			doomCounter.onUpdate(() => {
+				doomCounter.text = `DOOM IN: ${cntDoomCounter}`;
+				// doomCounter.font = "starborn";
+			});
+
+			// Add the Gameboard.
+			const gameBoard = k.add([
+				k.rect(gameBoardSize.x, gameBoardSize.y, { radius: 8 }),
+				k.pos(gameBoardPos),
+				k.area(),
+				k.scale(1),
+				k.anchor("center"),
+				k.outline(4, k.YELLOW),
+				k.color(0, 0, 0),
 				"gameboard",
 			]);
 
-			// Create card display board.
+			// Add a card display board.
 			const cardsBoard = gameBoard.add([
 				k.rect(cardsBoardSize.x, cardsBoardSize.y, { radius: 8 }),
 				k.pos(),
 				k.area(),
-				// k.body(),
 				k.scale(1),
 				k.anchor("center"),
-				// k.outline(4, k.YELLOW),
-				// k.color(255, 0, 0),
 				k.opacity(0),
-				k.z(5),
 				"cardsboard",
 			]);
 			// Function to add a card.
@@ -158,7 +150,6 @@ export default function initGame() {
 						}
 						// If the same card was not selected, then continue.
 						if (notSameCardSelected) {
-							//console.log("Update selected card!");
 							// Remove card concealer child.
 							destroyChildrenOfGameObject(card, "card-concealer");
 							// Display the card picture child.
@@ -184,7 +175,6 @@ export default function initGame() {
 							no_of_cards_selected += 1;
 							// Check if two cards have been selected.
 							if (no_of_cards_selected >= 2) {
-								//console.log("Two selected");
 								// Check if the two cards match.
 								checkCardMatch();
 								no_of_cards_selected = 0;
@@ -195,7 +185,6 @@ export default function initGame() {
 								console.log("GAME COMPLETED!");
 							}
 						}
-						//console.log(selected_cards_tags);
 					}
 				});
 
@@ -210,15 +199,13 @@ export default function initGame() {
 						firstSelectedCardArrObj.card_tag ===
 						secondSelectedCardArrObj.card_tag
 					) {
-						console.log("MATCHING!!!");
+						// console.log("MATCHING!!!");
 						// MATCHING cards.
 						solvedPairsCnt += 1;
 						cardsBoard
 							.get(firstSelectedCardArrObj.card_tag)
 							.forEach((e: GameObj) => {
-								console.log("INSIDE!!!");
-
-								k.addKaboom(e.pos.sub(0, 50));
+								k.addKaboom(k.vec2(500, 500));
 								e.card_solved = true;
 								e.color = k.YELLOW;
 								e.onHoverUpdate(() => {
@@ -231,13 +218,11 @@ export default function initGame() {
 								});
 							});
 					} else {
-						console.log("NOT MATCHING!!!");
+						// console.log("NOT MATCHING!!!");
 						//Update Doom Counter.
 						cntDoomCounter -= 1;
 						store.set(cntDoomCounterAtom, cntDoomCounter);
 						// Pause for split seconds before resetting unmatched cards.
-						console.log("firstSelectedCardArrObj: ", firstSelectedCardArrObj);
-						console.log("secondSelectedCardArrObj: ", secondSelectedCardArrObj);
 						k.wait(0.6, () => {
 							// Reset first selected card.
 							cardsBoard
@@ -265,7 +250,6 @@ export default function initGame() {
 				}
 
 				function resetCard(card: GameObj, tag: string) {
-					console.log("card:", card);
 					// Destroy the card picture child.
 					destroyChildrenOfGameObject(card, tag);
 					// Add the card concealer child.
@@ -288,9 +272,6 @@ export default function initGame() {
 
 				// return card;
 			}
-
-			addInfoBoard();
-			// addGameBoard();
 
 			// Function to setup x-coordinates of card positions.
 			interface x_CoordinatesOfCardsSetupOptions {
@@ -340,7 +321,6 @@ export default function initGame() {
 						x,
 						y,
 					};
-					// console.log(coordinates)
 					xy_posArr.push(coordinates);
 				}
 				return xy_posArr;
@@ -359,7 +339,6 @@ export default function initGame() {
 				for (const image of images) {
 					k.loadSprite(image, `./sprites/cards/${image}.png`);
 					pickedCoordinates = pickAndRemoveTwo(xy_PostionArray);
-					//console.log(pickedCoordinates)
 					addCard(
 						k.vec2(pickedCoordinates[0].x, pickedCoordinates[0].y),
 						image,
@@ -401,14 +380,6 @@ export default function initGame() {
 				return pickedItems;
 			}
 
-			// Initiate game variables.
-			let cntDoomCounter: number = 9;
-			let solvedPairsCnt: number = 0;
-			const solvedPairsForWin: number = images.length;
-			let no_of_cards_selected: number = 0;
-			let selected_cards_tags: { card_tag: string; unique_id_tag: string }[] =
-				[];
-
 			interface Coordinates {
 				x: number;
 				y: number;
@@ -441,8 +412,8 @@ export default function initGame() {
 		"palm_tree",
 		"gigagantrum",
 		"eben-etzebeth",
-		"siya-kolisi",
-		"dolphin",
+		// "siya-kolisi",
+		// "dolphin",
 		// "bag",
 		// "michael_scott",
 		// "bobo",
@@ -467,7 +438,12 @@ export default function initGame() {
 		// "spike",
 		// "tga",
 	];
-
+	// Initiate game variables.
+	let cntDoomCounter: number = 9;
+	let solvedPairsCnt: number = 0;
+	const solvedPairsForWin: number = images.length;
+	let no_of_cards_selected: number = 0;
+	let selected_cards_tags: { card_tag: string; unique_id_tag: string }[] = [];
 	const maxCardsInRow: number = 4;
 	const cardSize: Vec2 = k.vec2(110, 140);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);
@@ -482,18 +458,9 @@ export default function initGame() {
 	const cardsBoardHeight: number =
 		totalCardRows * (cardSize.y + y_spaces) - y_spaces;
 	const cardsBoardSize: Vec2 = k.vec2(cardsBoardWidth, cardsBoardHeight);
-	// const infoBoardSize = k.vec2(cardsBoardWidth, 100);
-	// const cardsBoardPos = k.vec2(
-	// 	infoBoardPos.x,
-	// 	infoBoardPos.y + infoBoardSize.y + cardsBoardHeight / 2 - 30
-	// );
-	// const x_start_pos = cardsBoardPos.x + x_spaces;
-	// const y_start_pos = cardsBoardPos.y + y_spaces;
-	// console.log("x_start_pos: ", x_start_pos);
-	// console.log("y_start_pos: ", y_start_pos);
 
 	k.go(
-		"memory_match_game_1",
+		"memory_match_game",
 		maxCardsInRow,
 		infoBoardPos,
 		infoBoardSize,
