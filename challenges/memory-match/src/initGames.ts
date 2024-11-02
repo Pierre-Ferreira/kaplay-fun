@@ -6,15 +6,15 @@ export default function initGame() {
 	const k = initKaplay();
 	k.setBackground(135, 62, 132);
 	k.loadSprite("cardConcealer", "/icons/cluesified-icon-main.png");
-	// k.loadFont("starborn", "happy_monday.tff");
+	// k.loadFont("samarin", "fonts/samarin.tff");
 
 	k.scene("memory_match_game_1", () => {
 		// reset cursor to default on frame start for easier cursor management.
 		k.onUpdate(() => k.setCursor("default"));
 
-		// Function to add the Doom Counter
-		function addDoomCounter(): void {
-			const doomCounter: GameObj = k.add([
+		// Function to add the Info Board.
+		function addInfoBoard(): void {
+			const infoBoard: GameObj = k.add([
 				k.rect(900, 100, { radius: 8 }),
 				k.pos(500, 65),
 				k.area(),
@@ -23,19 +23,33 @@ export default function initGame() {
 				k.outline(4, k.YELLOW),
 				k.color(0, 0, 0),
 			]);
-			const doomCounterText: GameObj = doomCounter.add([
+			const doomCounter: GameObj = infoBoard.add([
 				k.text("DOOM IN:", {
 					size: 30,
-					// font: "starborn",
+					// font: "samarin",
 				}),
 				k.anchor("center"),
 			]);
-			doomCounterText.onUpdate(() => {
-				doomCounterText.text = `DOOM IN: ${cntDoomCounter}`;
-				// doomCounterText.font = "starborn";
+			doomCounter.onUpdate(() => {
+				doomCounter.text = `DOOM IN: ${cntDoomCounter}`;
+				// doomCounter.font = "starborn";
 			});
 		}
 
+		// Function to a game board.
+		function addGameBoard(): void {
+			k.add([
+				k.rect(900, 700, { radius: 8 }),
+				k.pos(500, 500),
+				k.area(),
+				k.body,
+				k.scale(1),
+				k.anchor("center"),
+				k.outline(4, k.YELLOW),
+				k.color(0, 0, 0),
+			]);
+		}
+		const gameBoard = addGameBoard();
 		// Function to add a card.
 		function addCard(p: Vec2, card_tag: string, unique_id_tag: string): void {
 			const card_solved: boolean = false;
@@ -51,6 +65,7 @@ export default function initGame() {
 				k.color(225, 225, 225),
 				card_tag,
 				unique_id_tag,
+				"cards",
 				{
 					card_solved,
 					card_reveal_allowed,
@@ -234,7 +249,8 @@ export default function initGame() {
 			// return card;
 		}
 
-		addDoomCounter();
+		addInfoBoard();
+		addGameBoard();
 
 		// Function to setup x-coordinates of card positions.
 		interface x_CoordinatesOfCardsSetupOptions {
