@@ -74,7 +74,8 @@ export default function initGame() {
 				cardPos: Vec2,
 				card_tag: string,
 				unique_id_tag: string,
-				cardSize: Vec2
+				cardSize: Vec2,
+				cardGlobalPos: Vec2
 			): void {
 				const card_solved: boolean = false;
 				const card_reveal_allowed: boolean = true;
@@ -93,6 +94,7 @@ export default function initGame() {
 					{
 						card_solved,
 						card_reveal_allowed,
+						cardGlobalPos,
 					},
 				]);
 
@@ -205,7 +207,7 @@ export default function initGame() {
 						cardsBoard
 							.get(firstSelectedCardArrObj.card_tag)
 							.forEach((e: GameObj) => {
-								k.addKaboom(k.vec2(500, 500));
+								k.addKaboom(k.vec2(e.cardGlobalPos.x, e.cardGlobalPos.y));
 								e.card_solved = true;
 								e.color = k.YELLOW;
 								e.onHoverUpdate(() => {
@@ -269,8 +271,6 @@ export default function initGame() {
 						card.scale = k.vec2(1);
 					});
 				}
-
-				// return card;
 			}
 
 			// Function to setup x-coordinates of card positions.
@@ -339,17 +339,27 @@ export default function initGame() {
 				for (const image of images) {
 					k.loadSprite(image, `./sprites/cards/${image}.png`);
 					pickedCoordinates = pickAndRemoveTwo(xy_PostionArray);
+					const cardGlobalPos_0: Vec2 = k.vec2(
+						gameBoard.pos.x + pickedCoordinates[0].x,
+						gameBoard.pos.y + pickedCoordinates[0].y
+					);
+					const cardGlobalPos_1: Vec2 = k.vec2(
+						gameBoard.pos.x + pickedCoordinates[1].x,
+						gameBoard.pos.y + pickedCoordinates[1].y
+					);
 					addCard(
 						k.vec2(pickedCoordinates[0].x, pickedCoordinates[0].y),
 						image,
 						crypto.randomUUID(),
-						cardSize
+						cardSize,
+						cardGlobalPos_0
 					);
 					addCard(
 						k.vec2(pickedCoordinates[1].x, pickedCoordinates[1].y),
 						image,
 						crypto.randomUUID(),
-						cardSize
+						cardSize,
+						cardGlobalPos_1
 					);
 				}
 			}
