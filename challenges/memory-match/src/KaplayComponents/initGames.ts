@@ -22,13 +22,10 @@ export default function initGame() {
 			x_spaces: number,
 			y_spaces: number,
 			images: string[]
-			// cntDoomCounter: number
 		) => {
 			// reset cursor to default on frame start for easier cursor management.
 			k.onUpdate(() => k.setCursor("default"));
 
-			// const selected_cards_tags: { card_tag: string; unique_id_tag: string }[] =
-			// 	[];
 			// Add the Infoboard.
 			const infoBoard: GameObj = k.add([
 				k.rect(infoBoardSize.x, infoBoardSize.y, { radius: 8 }),
@@ -158,11 +155,6 @@ export default function initGame() {
 						cardGlobalPos_0,
 						cardsBoard,
 						k
-						// selected_cards_tags
-						// no_of_cards_selected,
-						// solvedPairsCnt,
-						// solvedPairsForWin,
-						// cntDoomCounter
 					);
 					addCard(
 						k.vec2(pickedCoordinates[1].x, pickedCoordinates[1].y),
@@ -172,11 +164,6 @@ export default function initGame() {
 						cardGlobalPos_1,
 						cardsBoard,
 						k
-						// selected_cards_tags
-						// no_of_cards_selected,
-						// solvedPairsCnt,
-						// solvedPairsForWin,
-						// cntDoomCounter
 					);
 				}
 			}
@@ -185,7 +172,6 @@ export default function initGame() {
 				let pickedItems = [];
 
 				if (arr.length <= 2) {
-					//   throw new Error("Array needs to have at least two elements.");
 					pickedItems = [arr[0], arr[1]];
 					return pickedItems;
 				}
@@ -264,14 +250,13 @@ export default function initGame() {
 		// "spike",
 		// "tga",
 	];
+
 	// Initiate game variables.
 	const cntDoomCounter: number = 9;
 	store.set(cntDoomCounterAtom, cntDoomCounter);
 
-	// const solvedPairsCnt: number = 0;
 	const solvedPairsForWin: number = images.length;
 	store.set(solvedPairsForWinAtom, solvedPairsForWin);
-	// const no_of_cards_selected: number = 0;
 
 	const maxCardsInRow: number = 4;
 	const cardSize: Vec2 = k.vec2(110, 140);
@@ -300,6 +285,5 @@ export default function initGame() {
 		x_spaces,
 		y_spaces,
 		images
-		// cntDoomCounter
 	);
 }

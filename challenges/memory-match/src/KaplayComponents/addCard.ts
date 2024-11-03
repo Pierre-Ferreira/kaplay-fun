@@ -7,9 +7,7 @@ import {
 	selectedCardsTagsAtom,
 } from "../store";
 import { GameObj, KAPLAYCtx, Vec2 } from "kaplay";
-// import initKaplay from "../kaplayCtx";
 
-// const k = initKaplay();
 // Function to add a card.
 export default function addCard(
 	cardPos: Vec2,
@@ -19,11 +17,6 @@ export default function addCard(
 	cardGlobalPos: Vec2,
 	cardsBoard: GameObj,
 	k: KAPLAYCtx
-	// selected_cards_tags: { card_tag: string; unique_id_tag: string }[]
-	// no_of_cards_selected: number,
-	// solvedPairsCnt: number,
-	// solvedPairsForWin: number,
-	// cntDoomCounter: number
 ): void {
 	const card_solved: boolean = false;
 	const card_reveal_allowed: boolean = true;
@@ -121,14 +114,12 @@ export default function addCard(
 					unique_id_tag,
 				};
 				selected_cards_tags.push(cardObj);
-				console.log("selected_cards_tags: ", selected_cards_tags);
 
 				// Increase the number of cards selected.
 				let no_of_cards_selected: number = store.get(noOfCardsSelectedAtom);
 				no_of_cards_selected += 1;
 				store.set(noOfCardsSelectedAtom, no_of_cards_selected);
 				// Check if two cards have been selected.
-				console.log("no_of_cards_selected: ", no_of_cards_selected);
 				if (no_of_cards_selected >= 2) {
 					// Check if the two cards match.
 					checkCardMatch(selected_cards_tags, cardsBoard);
@@ -156,8 +147,6 @@ export default function addCard(
 		// Store the selected cards in local variables to capture their values in this scope
 		const firstSelectedCardArrObj = selected_cards_tags[0];
 		const secondSelectedCardArrObj = selected_cards_tags[1];
-		console.log("firstSelectedCardArrObj: ", firstSelectedCardArrObj);
-		console.log("secondSelectedCardArrObj: ", secondSelectedCardArrObj);
 
 		// Check if the first card and second card selected have matching tags.
 		if (
