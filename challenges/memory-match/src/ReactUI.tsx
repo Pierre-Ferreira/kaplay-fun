@@ -1,4 +1,6 @@
 import GameFailPopup from "./ReactComponents/GameFailPopup";
+import GameWinPopup from "./ReactComponents/GameWinPopup";
+import GameTimeUpPopup from "./ReactComponents/GameTimeUpPopup";
 import { useAtomValue } from "jotai";
 import { isFailSignVisibleAtom } from "./store";
 import { isWinSignVisibleAtom } from "./store";
@@ -8,9 +10,9 @@ export default function ReactUI() {
 		return <>{<GameFailPopup />}</>;
 	}
 	if (useAtomValue(isWinSignVisibleAtom) === true) {
-		return <>{<GameFailPopup />}</>;
+		return <>{<GameWinPopup />}</>;
 	}
 	if (useAtomValue(isGameTimeUpAtom) === true) {
-		return <>{<GameFailPopup />}</>;
+		return <>{<GameTimeUpPopup />}</>;
 	}
 }

@@ -5,7 +5,7 @@ import "./GameFailPopup.css";
 export default function GameFailPopup() {
 	return (
 		<div className="text-box">
-			<p>TIMES UP!</p>
+			<p>TIME IS UP!</p>
 			<button>CONTINUE</button>
 		</div>
 	);

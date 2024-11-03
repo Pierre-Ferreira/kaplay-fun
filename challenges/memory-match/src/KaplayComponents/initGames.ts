@@ -10,6 +10,7 @@ import {
 	isGameCompletedAtom,
 	isFailSignVisibleAtom,
 	isWinSignVisibleAtom,
+	isGameTimeUpAtom,
 } from "../store";
 import addCard from "./addCard";
 
@@ -67,6 +68,7 @@ export default function initGame() {
 				} else {
 					timer.text = `${maxGameTimeSec.toFixed(2)}/${maxGameTimeSec}s`;
 					console.log("GAME COMPLETED!");
+					store.set(isGameTimeUpAtom, true);
 					store.set(isGameCompletedAtom, true);
 				}
 			});
@@ -337,7 +339,7 @@ export default function initGame() {
 	const solvedPairsForWin: number = images.length;
 	store.set(solvedPairsForWinAtom, solvedPairsForWin);
 
-	const maxGameTimeSec: number = 300;
+	const maxGameTimeSec: number = 3;
 	const maxCardsInRow: number = 5;
 	const cardSize: Vec2 = k.vec2(110, 130);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);
