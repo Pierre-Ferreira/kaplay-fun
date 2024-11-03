@@ -53,7 +53,13 @@ export default function addCard(
 
 	// Function to create a card picture
 	function createCardPicture() {
-		return [k.sprite(card_tag), k.anchor("center"), k.area(), unique_id_tag];
+		return [
+			k.sprite(card_tag),
+			k.anchor("center"),
+			k.area(),
+			unique_id_tag,
+			"card-picture",
+		];
 	}
 
 	// onHoverUpdate() comes from area() component
@@ -127,13 +133,6 @@ export default function addCard(
 					store.set(noOfCardsSelectedAtom, no_of_cards_selected);
 					selected_cards_tags = [];
 					store.set(selectedCardsTagsAtom, []);
-				}
-				// Check if the game has been completed.
-				const solvedPairsCnt: number = store.get(solvedPairsCntAtom);
-				const solvedPairsForWin: number = store.get(solvedPairsForWinAtom);
-
-				if (solvedPairsCnt === solvedPairsForWin) {
-					console.log("GAME COMPLETED!");
 				}
 			}
 		}

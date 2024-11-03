@@ -1,6 +1,13 @@
 import { GameObj, Vec2 } from "kaplay";
 import initKaplay from "../kaplayCtx";
-import { store, cntDoomCounterAtom, solvedPairsForWinAtom } from "../store";
+import {
+	store,
+	cntDoomCounterAtom,
+	solvedPairsForWinAtom,
+	solvedPairsCntAtom,
+	selectedCardsTagsAtom,
+	cntRoundsAtom,
+} from "../store";
 import addCard from "./addCard";
 
 export default function initGame() {
@@ -25,6 +32,9 @@ export default function initGame() {
 		) => {
 			// reset cursor to default on frame start for easier cursor management.
 			k.onUpdate(() => k.setCursor("default"));
+
+			// Array for cardboard per round.
+			const arrCardboardRounds: GameObj[] = [];
 
 			// Add the Infoboard.
 			const infoBoard: GameObj = k.add([
@@ -61,159 +71,203 @@ export default function initGame() {
 				k.color(0, 0, 0),
 				"gameboard",
 			]);
+			gameBoard.onUpdate(() => {
+				// Check if the game has been completed.
+				const solvedPairsCnt: number = store.get(solvedPairsCntAtom);
+				const solvedPairsForWin: number = store.get(solvedPairsForWinAtom);
 
-			// Add a card display board.
-			const cardsBoard: GameObj = gameBoard.add([
-				k.rect(cardsBoardSize.x, cardsBoardSize.y, { radius: 8 }),
-				k.pos(),
-				k.area(),
-				k.scale(1),
-				k.anchor("center"),
-				k.opacity(0),
-				"cardsboard",
-			]);
-
-			// Function to setup x-coordinates of card positions.
-			interface x_CoordinatesOfCardsSetupOptions {
-				maxCardsInRow: number;
-				x_start_pos: number;
-				x_offset: number;
-			}
-
-			function x_CoordinatesOfCardsSetup({
-				maxCardsInRow,
-				x_start_pos,
-				x_offset,
-			}: x_CoordinatesOfCardsSetupOptions): number[] {
-				let x_pos: number = 0;
-				const x_CoordinatesArray: number[] = [];
-				for (let x = 0; x < maxCardsInRow; x++) {
-					x_pos = x_start_pos + x_offset * x;
-					x_CoordinatesArray.push(x_pos);
+				if (solvedPairsCnt >= solvedPairsForWin) {
+					console.log("GAME COMPLETED!");
+				} else {
+					const cntDoomCounter: number = store.get(cntDoomCounterAtom);
+					if (cntDoomCounter <= 0) {
+						const cntDoomCounter: number = 14;
+						store.set(cntDoomCounterAtom, cntDoomCounter);
+						store.set(solvedPairsCntAtom, 0);
+						store.set(selectedCardsTagsAtom, []);
+						// Destroy the cardboard and all the children.
+						let cntRounds: number = store.get(cntRoundsAtom);
+						const cardsBoard: GameObj = arrCardboardRounds[cntRounds];
+						console.log("arrCardboardRounds2: ", arrCardboardRounds);
+						console.log("cardsBoard1: ", cardsBoard);
+						cardsBoard.get("cards").forEach((card: GameObj) => {
+							card.get("card-concealer").forEach((card_concealer: GameObj) => {
+								console.log("Destroy card-concealer");
+								k.destroy(card_concealer);
+							});
+							card.get("card-picture").forEach((card_pictures: GameObj) => {
+								console.log("Destroy card-picture");
+								k.destroy(card_pictures);
+							});
+							console.log("Destroy cards");
+							k.destroy(card);
+						});
+						k.destroy(cardsBoard);
+						// Start a new game and save the cardboard the array.
+						cntRounds += 1;
+						arrCardboardRounds[cntRounds] = runNewGame();
+						store.set(cntRoundsAtom, cntRounds);
+					}
 				}
-				return x_CoordinatesArray;
-			}
+			});
+			function runNewGame(): GameObj {
+				// Add a card display board.
+				const cardsBoard: GameObj = gameBoard.add([
+					k.rect(cardsBoardSize.x, cardsBoardSize.y, { radius: 8 }),
+					k.pos(),
+					k.area(),
+					k.scale(1),
+					k.anchor("center"),
+					k.opacity(0),
+					"cardsboard",
+				]);
 
-			// Function to create xy-coordinated of all the cards
-			interface xy_CooridinatesOfCardsSetupOptions {
-				totalNoOfCards: number;
-				maxCardsInRow: number;
-				x_CoordinatesArray: number[];
-				y_start_pos: number;
-				y_offset: number;
-			}
-
-			function xy_CooridinatesOfCardsSetup({
-				x_CoordinatesArray,
-				totalNoOfCards,
-				maxCardsInRow,
-				y_start_pos,
-				y_offset,
-			}: xy_CooridinatesOfCardsSetupOptions): Coordinates[] {
-				let coordinates: Coordinates = { x: 0, y: 0 };
-				let y: number = 0;
-				let x: number = 0;
-				const xy_posArr: Coordinates[] = [];
-				for (let p = 0; p < totalNoOfCards; p++) {
-					x = x_CoordinatesArray[p % maxCardsInRow];
-					y = Math.floor(p / maxCardsInRow) * y_offset + y_start_pos;
-					coordinates = {
-						x,
-						y,
-					};
-					xy_posArr.push(coordinates);
+				// Function to setup x-coordinates of card positions.
+				interface x_CoordinatesOfCardsSetupOptions {
+					maxCardsInRow: number;
+					x_start_pos: number;
+					x_offset: number;
 				}
-				return xy_posArr;
-			}
 
-			// Function to display Card on screen
-			interface displayCardsOptions {
-				images: string[];
-				xy_PostionArray: Coordinates[];
-			}
-			function displayCards({
-				images,
-				xy_PostionArray,
-			}: displayCardsOptions): void {
-				let pickedCoordinates = [];
-				for (const image of images) {
-					k.loadSprite(image, `./sprites/cards/${image}.png`);
-					pickedCoordinates = pickAndRemoveTwo(xy_PostionArray);
-					const cardGlobalPos_0: Vec2 = k.vec2(
-						gameBoard.pos.x + pickedCoordinates[0].x,
-						gameBoard.pos.y + pickedCoordinates[0].y
-					);
-					const cardGlobalPos_1: Vec2 = k.vec2(
-						gameBoard.pos.x + pickedCoordinates[1].x,
-						gameBoard.pos.y + pickedCoordinates[1].y
-					);
-					addCard(
-						k.vec2(pickedCoordinates[0].x, pickedCoordinates[0].y),
-						image,
-						crypto.randomUUID(),
-						cardSize,
-						cardGlobalPos_0,
-						cardsBoard,
-						k
-					);
-					addCard(
-						k.vec2(pickedCoordinates[1].x, pickedCoordinates[1].y),
-						image,
-						crypto.randomUUID(),
-						cardSize,
-						cardGlobalPos_1,
-						cardsBoard,
-						k
-					);
+				function x_CoordinatesOfCardsSetup({
+					maxCardsInRow,
+					x_start_pos,
+					x_offset,
+				}: x_CoordinatesOfCardsSetupOptions): number[] {
+					let x_pos: number = 0;
+					const x_CoordinatesArray: number[] = [];
+					for (let x = 0; x < maxCardsInRow; x++) {
+						x_pos = x_start_pos + x_offset * x;
+						x_CoordinatesArray.push(x_pos);
+					}
+					return x_CoordinatesArray;
 				}
-			}
 
-			function pickAndRemoveTwo(arr: Coordinates[]) {
-				let pickedItems = [];
+				// Function to create xy-coordinated of all the cards
+				interface xy_CooridinatesOfCardsSetupOptions {
+					totalNoOfCards: number;
+					maxCardsInRow: number;
+					x_CoordinatesArray: number[];
+					y_start_pos: number;
+					y_offset: number;
+				}
 
-				if (arr.length <= 2) {
-					pickedItems = [arr[0], arr[1]];
+				function xy_CooridinatesOfCardsSetup({
+					x_CoordinatesArray,
+					totalNoOfCards,
+					maxCardsInRow,
+					y_start_pos,
+					y_offset,
+				}: xy_CooridinatesOfCardsSetupOptions): Coordinates[] {
+					let coordinates: Coordinates = { x: 0, y: 0 };
+					let y: number = 0;
+					let x: number = 0;
+					const xy_posArr: Coordinates[] = [];
+					for (let p = 0; p < totalNoOfCards; p++) {
+						x = x_CoordinatesArray[p % maxCardsInRow];
+						y = Math.floor(p / maxCardsInRow) * y_offset + y_start_pos;
+						coordinates = {
+							x,
+							y,
+						};
+						xy_posArr.push(coordinates);
+					}
+					return xy_posArr;
+				}
+
+				// Function to display Card on screen
+				interface displayCardsOptions {
+					images: string[];
+					xy_PostionArray: Coordinates[];
+				}
+				function displayCards({
+					images,
+					xy_PostionArray,
+				}: displayCardsOptions): void {
+					let pickedCoordinates = [];
+					for (const image of images) {
+						k.loadSprite(image, `./sprites/cards/${image}.png`);
+						pickedCoordinates = pickAndRemoveTwo(xy_PostionArray);
+						const cardGlobalPos_0: Vec2 = k.vec2(
+							gameBoard.pos.x + pickedCoordinates[0].x,
+							gameBoard.pos.y + pickedCoordinates[0].y
+						);
+						const cardGlobalPos_1: Vec2 = k.vec2(
+							gameBoard.pos.x + pickedCoordinates[1].x,
+							gameBoard.pos.y + pickedCoordinates[1].y
+						);
+						addCard(
+							k.vec2(pickedCoordinates[0].x, pickedCoordinates[0].y),
+							image,
+							crypto.randomUUID(),
+							cardSize,
+							cardGlobalPos_0,
+							cardsBoard,
+							k
+						);
+						addCard(
+							k.vec2(pickedCoordinates[1].x, pickedCoordinates[1].y),
+							image,
+							crypto.randomUUID(),
+							cardSize,
+							cardGlobalPos_1,
+							cardsBoard,
+							k
+						);
+					}
+				}
+
+				function pickAndRemoveTwo(arr: Coordinates[]) {
+					let pickedItems = [];
+
+					if (arr.length <= 2) {
+						pickedItems = [arr[0], arr[1]];
+						return pickedItems;
+					}
+
+					// Get two unique random indices
+					const index1 = Math.floor(Math.random() * arr.length);
+					let index2;
+					do {
+						index2 = Math.floor(Math.random() * arr.length);
+					} while (index2 === index1);
+
+					// Get the elements at these indices
+					pickedItems = [arr[index1], arr[index2]];
+
+					// Remove items from array by index, starting from the larger index to avoid shifting
+					arr.splice(Math.max(index1, index2), 1);
+					arr.splice(Math.min(index1, index2), 1);
+
 					return pickedItems;
 				}
 
-				// Get two unique random indices
-				const index1 = Math.floor(Math.random() * arr.length);
-				let index2;
-				do {
-					index2 = Math.floor(Math.random() * arr.length);
-				} while (index2 === index1);
-
-				// Get the elements at these indices
-				pickedItems = [arr[index1], arr[index2]];
-
-				// Remove items from array by index, starting from the larger index to avoid shifting
-				arr.splice(Math.max(index1, index2), 1);
-				arr.splice(Math.min(index1, index2), 1);
-
-				return pickedItems;
+				interface Coordinates {
+					x: number;
+					y: number;
+				}
+				// Setup the x-coordinates of the card positions.
+				const x_CoordinatesArr: number[] = x_CoordinatesOfCardsSetup({
+					maxCardsInRow,
+					x_start_pos: 0 - cardsBoardSize.x / 2 + cardSize.x / 2,
+					x_offset: cardSize.x + x_spaces,
+				});
+				const noOfImages: number = images.length;
+				// Setup the xy coordinates of all the card.
+				const xy_PostionArray: Coordinates[] = xy_CooridinatesOfCardsSetup({
+					totalNoOfCards: noOfImages * 2,
+					maxCardsInRow,
+					x_CoordinatesArray: x_CoordinatesArr,
+					y_start_pos: 0 - cardsBoardSize.y / 2 + cardSize.y / 2,
+					y_offset: cardSize.y + y_spaces,
+				});
+				// Display all the cards.
+				displayCards({ images, xy_PostionArray });
+				return cardsBoard;
 			}
-
-			interface Coordinates {
-				x: number;
-				y: number;
-			}
-			// Setup the x-coordinates of the card positions.
-			const x_CoordinatesArr: number[] = x_CoordinatesOfCardsSetup({
-				maxCardsInRow,
-				x_start_pos: 0 - cardsBoardSize.x / 2 + cardSize.x / 2,
-				x_offset: cardSize.x + x_spaces,
-			});
-			const noOfImages: number = images.length;
-			// Setup the xy coordinates of all the card.
-			const xy_PostionArray: Coordinates[] = xy_CooridinatesOfCardsSetup({
-				totalNoOfCards: noOfImages * 2,
-				maxCardsInRow,
-				x_CoordinatesArray: x_CoordinatesArr,
-				y_start_pos: 0 - cardsBoardSize.y / 2 + cardSize.y / 2,
-				y_offset: cardSize.y + y_spaces,
-			});
-			// Display all the cards.
-			displayCards({ images, xy_PostionArray });
+			const cntRounds: number = store.get(cntRoundsAtom);
+			arrCardboardRounds[cntRounds] = runNewGame();
+			console.log("arrCardboardRounds1: ", arrCardboardRounds);
 		}
 	);
 
@@ -226,11 +280,10 @@ export default function initGame() {
 		"eben-etzebeth",
 		"siya-kolisi",
 		"dolphin",
-		// "bag",
+		"bag",
+		"bobo",
 		// "michael_scott",
-		// "bobo",
 		// "cloud",
-		// "natal-sharks",
 		// "coin",
 		// "egg",
 		// "ghostiny",
@@ -252,14 +305,14 @@ export default function initGame() {
 	];
 
 	// Initiate game variables.
-	const cntDoomCounter: number = 9;
+	const cntDoomCounter: number = 14;
 	store.set(cntDoomCounterAtom, cntDoomCounter);
 
 	const solvedPairsForWin: number = images.length;
 	store.set(solvedPairsForWinAtom, solvedPairsForWin);
 
-	const maxCardsInRow: number = 4;
-	const cardSize: Vec2 = k.vec2(110, 140);
+	const maxCardsInRow: number = 5;
+	const cardSize: Vec2 = k.vec2(110, 130);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);
 	const infoBoardSize: Vec2 = k.vec2(900, 100);
 	const gameBoardPos: Vec2 = k.vec2(500, 500);
@@ -273,6 +326,7 @@ export default function initGame() {
 		totalCardRows * (cardSize.y + y_spaces) - y_spaces;
 	const cardsBoardSize: Vec2 = k.vec2(cardsBoardWidth, cardsBoardHeight);
 
+	console.log("Start game.");
 	k.go(
 		"memory_match_game",
 		maxCardsInRow,

@@ -9,5 +9,6 @@ export const noOfCardsSelectedAtom: PrimitiveAtom<number> = atom(0);
 export const solvedPairsCntAtom: PrimitiveAtom<number> = atom(0);
 export const solvedPairsForWinAtom: PrimitiveAtom<number> = atom(0);
 export const cntDoomCounterAtom: PrimitiveAtom<number> = atom(0);
+export const cntRoundsAtom: PrimitiveAtom<number> = atom(0);
 export const selectedCardsTagsAtom: PrimitiveAtom<[]> = atom([]);
 export const store = createStore();
