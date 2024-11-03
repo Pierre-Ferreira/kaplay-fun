@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import ReactUI from "./ReactUI.tsx";
-import initGame from "./initGames.ts";
+import initGame from "./KaplayComponents/initGames.ts";
 import { Provider } from "jotai";
 import { store } from "./store.ts";
 

@@ -1,6 +1,7 @@
 import { GameObj, Vec2 } from "kaplay";
-import initKaplay from "./kaplayCtx";
-import { store, cntDoomCounterAtom } from "./store";
+import initKaplay from "../kaplayCtx";
+import { store, cntDoomCounterAtom, solvedPairsForWinAtom } from "../store";
+import addCard from "./addCard";
 
 export default function initGame() {
 	const k = initKaplay();
@@ -18,12 +19,16 @@ export default function initGame() {
 			gameBoardSize: Vec2,
 			cardsBoardSize: Vec2,
 			cardSize: Vec2,
-			x_spaces,
-			y_spaces
+			x_spaces: number,
+			y_spaces: number,
+			images: string[]
+			// cntDoomCounter: number
 		) => {
 			// reset cursor to default on frame start for easier cursor management.
 			k.onUpdate(() => k.setCursor("default"));
 
+			// const selected_cards_tags: { card_tag: string; unique_id_tag: string }[] =
+			// 	[];
 			// Add the Infoboard.
 			const infoBoard: GameObj = k.add([
 				k.rect(infoBoardSize.x, infoBoardSize.y, { radius: 8 }),
@@ -43,12 +48,13 @@ export default function initGame() {
 				k.anchor("center"),
 			]);
 			doomCounter.onUpdate(() => {
+				const cntDoomCounter: number = store.get(cntDoomCounterAtom);
 				doomCounter.text = `DOOM IN: ${cntDoomCounter}`;
 				// doomCounter.font = "starborn";
 			});
 
 			// Add the Gameboard.
-			const gameBoard = k.add([
+			const gameBoard: GameObj = k.add([
 				k.rect(gameBoardSize.x, gameBoardSize.y, { radius: 8 }),
 				k.pos(gameBoardPos),
 				k.area(),
@@ -60,7 +66,7 @@ export default function initGame() {
 			]);
 
 			// Add a card display board.
-			const cardsBoard = gameBoard.add([
+			const cardsBoard: GameObj = gameBoard.add([
 				k.rect(cardsBoardSize.x, cardsBoardSize.y, { radius: 8 }),
 				k.pos(),
 				k.area(),
@@ -69,209 +75,6 @@ export default function initGame() {
 				k.opacity(0),
 				"cardsboard",
 			]);
-			// Function to add a card.
-			function addCard(
-				cardPos: Vec2,
-				card_tag: string,
-				unique_id_tag: string,
-				cardSize: Vec2,
-				cardGlobalPos: Vec2
-			): void {
-				const card_solved: boolean = false;
-				const card_reveal_allowed: boolean = true;
-				// add a card object
-				const card: GameObj = cardsBoard.add([
-					k.rect(cardSize.x, cardSize.y, { radius: 8 }),
-					k.pos(cardPos),
-					k.area(),
-					k.scale(1),
-					k.anchor("center"),
-					k.outline(4),
-					k.color(225, 225, 225),
-					card_tag,
-					unique_id_tag,
-					"cards",
-					{
-						card_solved,
-						card_reveal_allowed,
-						cardGlobalPos,
-					},
-				]);
-
-				// Function to create a card concealer.
-				function createCardConcealer() {
-					return [
-						k.sprite("cardConcealer"),
-						k.anchor("center"),
-						k.area(),
-						"card-concealer",
-					];
-				}
-				// Add a card concealer as a child to the card
-				card.add(createCardConcealer());
-
-				// Function to create a card picture
-				function createCardPicture() {
-					return [
-						k.sprite(card_tag),
-						k.anchor("center"),
-						k.area(),
-						unique_id_tag,
-					];
-				}
-
-				// onHoverUpdate() comes from area() component
-				// it runs every frame when the object is being hovered
-				card.onHoverUpdate(() => {
-					const t = k.time() * 10;
-					card.color = k.hsl2rgb((t / 10) % 1, 0.6, 0.7);
-					card.scale = k.vec2(1.05);
-					k.setCursor("pointer");
-				});
-
-				// onHoverEnd() comes from area() component
-				// it runs once when the object stopped being hovered
-				card.onHoverEnd(() => {
-					card.scale = k.vec2(1);
-					card.color = k.rgb(255, 255, 255);
-				});
-
-				// onClick() comes from area() component
-				// it runs once when the object is clicked
-				card.onClick(() => {
-					// Only continue if the card is not solved and card is allowed to be revealed.
-					if (!card.card_solved && card.card_reveal_allowed) {
-						// Prevent card from being reveal, until reset of card.
-						card.card_reveal_allowed = false;
-						// Check if the same card was clicked.
-						let notSameCardSelected = true;
-						if (selected_cards_tags[0] !== undefined) {
-							if (unique_id_tag === selected_cards_tags[0].unique_id_tag) {
-								notSameCardSelected = false;
-							}
-						}
-						// If the same card was not selected, then continue.
-						if (notSameCardSelected) {
-							// Remove card concealer child.
-							destroyChildrenOfGameObject(card, "card-concealer");
-							// Display the card picture child.
-							card.add(createCardPicture());
-							// Set color of selected card and hover properties.
-							card.color = k.RED;
-							card.onHoverUpdate(() => {
-								card.color = k.RED;
-								card.scale = k.vec2(1);
-							});
-							card.onHoverEnd(() => {
-								card.color = k.RED;
-								card.scale = k.vec2(1);
-							});
-
-							// Create card object and push it to selected card array.
-							const cardObj = {
-								card_tag,
-								unique_id_tag,
-							};
-							selected_cards_tags.push(cardObj);
-							// Increase the number of cards selected.
-							no_of_cards_selected += 1;
-							// Check if two cards have been selected.
-							if (no_of_cards_selected >= 2) {
-								// Check if the two cards match.
-								checkCardMatch();
-								no_of_cards_selected = 0;
-								selected_cards_tags = [];
-							}
-							// Check if the game has been completed.
-							if (solvedPairsCnt === solvedPairsForWin) {
-								console.log("GAME COMPLETED!");
-							}
-						}
-					}
-				});
-
-				// Function to check if the two cards selected have matching tags.
-				function checkCardMatch() {
-					// Store the selected cards in local variables to capture their values in this scope
-					const firstSelectedCardArrObj = selected_cards_tags[0];
-					const secondSelectedCardArrObj = selected_cards_tags[1];
-
-					// Check if the first card and second card selected have matching tags.
-					if (
-						firstSelectedCardArrObj.card_tag ===
-						secondSelectedCardArrObj.card_tag
-					) {
-						// console.log("MATCHING!!!");
-						// MATCHING cards.
-						solvedPairsCnt += 1;
-						cardsBoard
-							.get(firstSelectedCardArrObj.card_tag)
-							.forEach((e: GameObj) => {
-								k.addKaboom(k.vec2(e.cardGlobalPos.x, e.cardGlobalPos.y));
-								e.card_solved = true;
-								e.color = k.YELLOW;
-								e.onHoverUpdate(() => {
-									e.color = k.YELLOW;
-									e.scale = k.vec2(1.025);
-								});
-								e.onHoverEnd(() => {
-									e.color = k.YELLOW;
-									e.scale = k.vec2(1);
-								});
-							});
-					} else {
-						// console.log("NOT MATCHING!!!");
-						//Update Doom Counter.
-						cntDoomCounter -= 1;
-						store.set(cntDoomCounterAtom, cntDoomCounter);
-						// Pause for split seconds before resetting unmatched cards.
-						k.wait(0.6, () => {
-							// Reset first selected card.
-							cardsBoard
-								.get(firstSelectedCardArrObj.unique_id_tag)
-								.forEach((e1: GameObj) => {
-									resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
-								});
-							// Reset second selected card.
-							cardsBoard
-								.get(secondSelectedCardArrObj.unique_id_tag)
-								.forEach((e2: GameObj) => {
-									resetCard(e2, secondSelectedCardArrObj.unique_id_tag);
-								});
-						});
-					}
-				}
-
-				function destroyChildrenOfGameObject(gameObj: GameObj, tag: string) {
-					// Loop through the game objects children and destroy those that match the tag.
-					gameObj.children.forEach((child: GameObj) => {
-						if (child.is(tag)) {
-							child.destroy();
-						}
-					});
-				}
-
-				function resetCard(card: GameObj, tag: string) {
-					// Destroy the card picture child.
-					destroyChildrenOfGameObject(card, tag);
-					// Add the card concealer child.
-					card.add(createCardConcealer());
-					// Allow card to be revealed again.
-					card.card_reveal_allowed = true;
-					// Reset card color and hover properties
-					card.color = k.rgb(255, 255, 255);
-					card.onHoverUpdate(() => {
-						const t = k.time() * 10;
-						card.color = k.hsl2rgb((t / 10) % 1, 0.6, 0.7);
-						card.scale = k.vec2(1.05);
-						k.setCursor("pointer");
-					});
-					card.onHoverEnd(() => {
-						card.color = k.rgb(255, 255, 255);
-						card.scale = k.vec2(1);
-					});
-				}
-			}
 
 			// Function to setup x-coordinates of card positions.
 			interface x_CoordinatesOfCardsSetupOptions {
@@ -352,14 +155,26 @@ export default function initGame() {
 						image,
 						crypto.randomUUID(),
 						cardSize,
-						cardGlobalPos_0
+						cardGlobalPos_0,
+						cardsBoard
+						// selected_cards_tags
+						// no_of_cards_selected,
+						// solvedPairsCnt,
+						// solvedPairsForWin,
+						// cntDoomCounter
 					);
 					addCard(
 						k.vec2(pickedCoordinates[1].x, pickedCoordinates[1].y),
 						image,
 						crypto.randomUUID(),
 						cardSize,
-						cardGlobalPos_1
+						cardGlobalPos_1,
+						cardsBoard
+						// selected_cards_tags
+						// no_of_cards_selected,
+						// solvedPairsCnt,
+						// solvedPairsForWin,
+						// cntDoomCounter
 					);
 				}
 			}
@@ -394,7 +209,6 @@ export default function initGame() {
 				x: number;
 				y: number;
 			}
-			// const maxCardsInRow: number = 4;
 			// Setup the x-coordinates of the card positions.
 			const x_CoordinatesArr: number[] = x_CoordinatesOfCardsSetup({
 				maxCardsInRow,
@@ -418,10 +232,10 @@ export default function initGame() {
 	const images: string[] = [
 		"apple",
 		"pineapple",
-		"bean",
-		"palm_tree",
-		"gigagantrum",
-		"eben-etzebeth",
+		// "bean",
+		// "palm_tree",
+		// "gigagantrum",
+		// "eben-etzebeth",
 		// "siya-kolisi",
 		// "dolphin",
 		// "bag",
@@ -449,11 +263,14 @@ export default function initGame() {
 		// "tga",
 	];
 	// Initiate game variables.
-	let cntDoomCounter: number = 9;
-	let solvedPairsCnt: number = 0;
+	const cntDoomCounter: number = 9;
+	store.set(cntDoomCounterAtom, cntDoomCounter);
+
+	// const solvedPairsCnt: number = 0;
 	const solvedPairsForWin: number = images.length;
-	let no_of_cards_selected: number = 0;
-	let selected_cards_tags: { card_tag: string; unique_id_tag: string }[] = [];
+	store.set(solvedPairsForWinAtom, solvedPairsForWin);
+	// const no_of_cards_selected: number = 0;
+
 	const maxCardsInRow: number = 4;
 	const cardSize: Vec2 = k.vec2(110, 140);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);
@@ -479,6 +296,8 @@ export default function initGame() {
 		cardsBoardSize,
 		cardSize,
 		x_spaces,
-		y_spaces
+		y_spaces,
+		images
+		// cntDoomCounter
 	);
 }
