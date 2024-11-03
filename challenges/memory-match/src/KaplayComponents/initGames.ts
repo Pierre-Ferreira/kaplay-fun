@@ -8,6 +8,8 @@ import {
 	selectedCardsTagsAtom,
 	cntRoundsAtom,
 	isGameCompletedAtom,
+	isFailSignVisibleAtom,
+	isWinSignVisibleAtom,
 } from "../store";
 import addCard from "./addCard";
 
@@ -104,10 +106,13 @@ export default function initGame() {
 
 				if (solvedPairsCnt >= solvedPairsForWin) {
 					console.log("GAME COMPLETED!");
+					store.set(isWinSignVisibleAtom, true);
 					store.set(isGameCompletedAtom, true);
 				} else {
 					const cntDoomCounter: number = store.get(cntDoomCounterAtom);
 					if (cntDoomCounter <= 0) {
+						console.log("GAME FAILED!");
+						store.set(isFailSignVisibleAtom, true);
 						const cntDoomCounter: number = 14;
 						store.set(cntDoomCounterAtom, cntDoomCounter);
 						store.set(solvedPairsCntAtom, 0);
@@ -326,7 +331,7 @@ export default function initGame() {
 	];
 
 	// Initiate game variables.
-	const cntDoomCounter: number = 14;
+	const cntDoomCounter: number = 12;
 	store.set(cntDoomCounterAtom, cntDoomCounter);
 
 	const solvedPairsForWin: number = images.length;

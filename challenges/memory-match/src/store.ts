@@ -3,6 +3,7 @@ import { atom, createStore } from "jotai";
 
 export const isFailSignVisibleAtom: PrimitiveAtom<boolean> = atom(false);
 export const isWinSignVisibleAtom: PrimitiveAtom<boolean> = atom(false);
+export const isGameTimeUpAtom: PrimitiveAtom<boolean> = atom(false);
 export const isGameCompletedAtom: PrimitiveAtom<boolean> = atom(false);
 export const noOfCardsSelectedAtom: PrimitiveAtom<number> = atom(0);
 export const solvedPairsCntAtom: PrimitiveAtom<number> = atom(0);
