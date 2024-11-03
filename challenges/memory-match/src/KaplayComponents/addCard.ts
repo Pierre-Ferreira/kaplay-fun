@@ -6,10 +6,10 @@ import {
 	solvedPairsForWinAtom,
 	selectedCardsTagsAtom,
 } from "../store";
-import { GameObj, Vec2 } from "kaplay";
-import initKaplay from "../kaplayCtx";
+import { GameObj, KAPLAYCtx, Vec2 } from "kaplay";
+// import initKaplay from "../kaplayCtx";
 
-const k = initKaplay();
+// const k = initKaplay();
 // Function to add a card.
 export default function addCard(
 	cardPos: Vec2,
@@ -17,7 +17,8 @@ export default function addCard(
 	unique_id_tag: string,
 	cardSize: Vec2,
 	cardGlobalPos: Vec2,
-	cardsBoard: GameObj
+	cardsBoard: GameObj,
+	k: KAPLAYCtx
 	// selected_cards_tags: { card_tag: string; unique_id_tag: string }[]
 	// no_of_cards_selected: number,
 	// solvedPairsCnt: number,
@@ -130,7 +131,7 @@ export default function addCard(
 				console.log("no_of_cards_selected: ", no_of_cards_selected);
 				if (no_of_cards_selected >= 2) {
 					// Check if the two cards match.
-					checkCardMatch(selected_cards_tags);
+					checkCardMatch(selected_cards_tags, cardsBoard);
 					no_of_cards_selected = 0;
 					store.set(noOfCardsSelectedAtom, no_of_cards_selected);
 					selected_cards_tags = [];
@@ -149,7 +150,8 @@ export default function addCard(
 
 	// Function to check if the two cards selected have matching tags.
 	function checkCardMatch(
-		selected_cards_tags: { card_tag: string; unique_id_tag: string }[]
+		selected_cards_tags: { card_tag: string; unique_id_tag: string }[],
+		cardsBoard: GameObj
 	) {
 		// Store the selected cards in local variables to capture their values in this scope
 		const firstSelectedCardArrObj = selected_cards_tags[0];

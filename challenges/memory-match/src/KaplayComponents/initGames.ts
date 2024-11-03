@@ -156,7 +156,8 @@ export default function initGame() {
 						crypto.randomUUID(),
 						cardSize,
 						cardGlobalPos_0,
-						cardsBoard
+						cardsBoard,
+						k
 						// selected_cards_tags
 						// no_of_cards_selected,
 						// solvedPairsCnt,
@@ -169,7 +170,8 @@ export default function initGame() {
 						crypto.randomUUID(),
 						cardSize,
 						cardGlobalPos_1,
-						cardsBoard
+						cardsBoard,
+						k
 						// selected_cards_tags
 						// no_of_cards_selected,
 						// solvedPairsCnt,
@@ -232,12 +234,12 @@ export default function initGame() {
 	const images: string[] = [
 		"apple",
 		"pineapple",
-		// "bean",
-		// "palm_tree",
-		// "gigagantrum",
-		// "eben-etzebeth",
-		// "siya-kolisi",
-		// "dolphin",
+		"bean",
+		"palm_tree",
+		"gigagantrum",
+		"eben-etzebeth",
+		"siya-kolisi",
+		"dolphin",
 		// "bag",
 		// "michael_scott",
 		// "bobo",
