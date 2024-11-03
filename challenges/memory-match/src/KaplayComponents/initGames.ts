@@ -7,6 +7,7 @@ import {
 	solvedPairsCntAtom,
 	selectedCardsTagsAtom,
 	cntRoundsAtom,
+	isGameCompletedAtom,
 } from "../store";
 import addCard from "./addCard";
 
@@ -14,11 +15,12 @@ export default function initGame() {
 	const k = initKaplay();
 	k.setBackground(135, 62, 132);
 	k.loadSprite("cardConcealer", "/icons/cluesified-icon-main.png");
-	// k.loadFont("samarin", "fonts/samarin.tff");
+	// k.loadFont("starborn", `starborn.tff`);
 
 	k.scene(
 		"memory_match_game",
 		(
+			maxGameTimeSec: number,
 			maxCardsInRow: number,
 			infoBoardPos: Vec2,
 			infoBoardSize: Vec2,
@@ -47,16 +49,40 @@ export default function initGame() {
 				k.color(0, 0, 0),
 				"infoboard",
 			]);
+			const timerPos: Vec2 = k.vec2(-(infoBoardSize.x / 2) + 50, -20);
+			const timer = infoBoard.add([
+				k.text(`0/${maxGameTimeSec}s`),
+				k.pos(timerPos),
+				// k.font = "starborn";
+				k.fixed(),
+				{ time: 0 },
+			]);
+
+			timer.onUpdate(() => {
+				timer.time += k.dt();
+				if (timer.time < maxGameTimeSec) {
+					timer.text = `${timer.time.toFixed(2)}/${maxGameTimeSec}s`;
+				} else {
+					timer.text = `${maxGameTimeSec.toFixed(2)}/${maxGameTimeSec}s`;
+					console.log("GAME COMPLETED!");
+					store.set(isGameCompletedAtom, true);
+				}
+			});
 			const doomCounter: GameObj = infoBoard.add([
-				k.text("DOOM IN:", {
+				k.text("CHANCES LEFT:", {
 					size: 30,
-					// font: "samarin",
+					// font: "starborn",
 				}),
+				k.pos(0, 0),
 				k.anchor("center"),
 			]);
 			doomCounter.onUpdate(() => {
 				const cntDoomCounter: number = store.get(cntDoomCounterAtom);
-				doomCounter.text = `DOOM IN: ${cntDoomCounter}`;
+				if (cntDoomCounter > 3) {
+					doomCounter.text = `CHANCES LEFT: ${cntDoomCounter}`;
+				} else {
+					doomCounter.text = `DOOM IN: ${cntDoomCounter}`;
+				}
 				// doomCounter.font = "starborn";
 			});
 
@@ -78,6 +104,7 @@ export default function initGame() {
 
 				if (solvedPairsCnt >= solvedPairsForWin) {
 					console.log("GAME COMPLETED!");
+					store.set(isGameCompletedAtom, true);
 				} else {
 					const cntDoomCounter: number = store.get(cntDoomCounterAtom);
 					if (cntDoomCounter <= 0) {
@@ -88,18 +115,13 @@ export default function initGame() {
 						// Destroy the cardboard and all the children.
 						let cntRounds: number = store.get(cntRoundsAtom);
 						const cardsBoard: GameObj = arrCardboardRounds[cntRounds];
-						console.log("arrCardboardRounds2: ", arrCardboardRounds);
-						console.log("cardsBoard1: ", cardsBoard);
 						cardsBoard.get("cards").forEach((card: GameObj) => {
 							card.get("card-concealer").forEach((card_concealer: GameObj) => {
-								console.log("Destroy card-concealer");
 								k.destroy(card_concealer);
 							});
 							card.get("card-picture").forEach((card_pictures: GameObj) => {
-								console.log("Destroy card-picture");
 								k.destroy(card_pictures);
 							});
-							console.log("Destroy cards");
 							k.destroy(card);
 						});
 						k.destroy(cardsBoard);
@@ -267,7 +289,6 @@ export default function initGame() {
 			}
 			const cntRounds: number = store.get(cntRoundsAtom);
 			arrCardboardRounds[cntRounds] = runNewGame();
-			console.log("arrCardboardRounds1: ", arrCardboardRounds);
 		}
 	);
 
@@ -311,6 +332,7 @@ export default function initGame() {
 	const solvedPairsForWin: number = images.length;
 	store.set(solvedPairsForWinAtom, solvedPairsForWin);
 
+	const maxGameTimeSec: number = 300;
 	const maxCardsInRow: number = 5;
 	const cardSize: Vec2 = k.vec2(110, 130);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);
@@ -329,6 +351,7 @@ export default function initGame() {
 	console.log("Start game.");
 	k.go(
 		"memory_match_game",
+		maxGameTimeSec,
 		maxCardsInRow,
 		infoBoardPos,
 		infoBoardSize,
