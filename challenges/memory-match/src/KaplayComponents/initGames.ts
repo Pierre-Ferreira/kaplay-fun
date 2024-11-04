@@ -11,6 +11,7 @@ import {
 	isFailSignVisibleAtom,
 	isWinSignVisibleAtom,
 	isGameTimeUpAtom,
+	isRoundCompletedAtom,
 } from "../store";
 import addCard from "./addCard";
 
@@ -73,7 +74,8 @@ export default function initGame() {
 					timer.textSize = 35;
 					timer.color = k.RED;
 					timer.pos = k.vec2(timerPos.x, timerPos.y - 15);
-					console.log("GAME COMPLETED!");
+					// console.log("GAME COMPLETED!");
+					store.set(isRoundCompletedAtom, true);
 					store.set(isGameTimeUpAtom, true);
 					store.set(isGameCompletedAtom, true);
 				}
@@ -115,13 +117,15 @@ export default function initGame() {
 				const solvedPairsForWin: number = store.get(solvedPairsForWinAtom);
 
 				if (solvedPairsCnt >= solvedPairsForWin) {
-					console.log("GAME COMPLETED!");
+					// console.log("GAME COMPLETED!");
+					store.set(isRoundCompletedAtom, true);
 					store.set(isWinSignVisibleAtom, true);
 					store.set(isGameCompletedAtom, true);
 				} else {
 					const cntDoomCounter: number = store.get(cntDoomCounterAtom);
 					if (cntDoomCounter <= 0) {
-						console.log("GAME FAILED!");
+						// console.log("GAME FAILED!");
+						store.set(isRoundCompletedAtom, true);
 						store.set(isFailSignVisibleAtom, true);
 						const cntDoomCounter: number = 14;
 						store.set(cntDoomCounterAtom, cntDoomCounter);
@@ -148,6 +152,8 @@ export default function initGame() {
 				}
 			});
 			function runNewGame(): GameObj {
+				// Start of a new round.
+				store.set(isRoundCompletedAtom, false);
 				// Add a card display board.
 				const cardsBoard: GameObj = gameBoard.add([
 					k.rect(cardsBoardSize.x, cardsBoardSize.y, { radius: 8 }),
@@ -310,14 +316,14 @@ export default function initGame() {
 	const images: string[] = [
 		"apple",
 		"pineapple",
-		// "bean",
-		// "palm_tree",
-		// "gigagantrum",
-		// "eben-etzebeth",
-		// "siya-kolisi",
-		// "dolphin",
-		// "bag",
-		// "bobo",
+		"bean",
+		"palm_tree",
+		"gigagantrum",
+		"eben-etzebeth",
+		"siya-kolisi",
+		"dolphin",
+		"bag",
+		"bobo",
 		// "michael_scott",
 		// "cloud",
 		// "coin",
@@ -347,7 +353,7 @@ export default function initGame() {
 	const solvedPairsForWin: number = images.length;
 	store.set(solvedPairsForWinAtom, solvedPairsForWin);
 
-	const maxGameTimeSec: number = 600;
+	const maxGameTimeSec: number = 3;
 	const maxCardsInRow: number = 5;
 	const cardSize: Vec2 = k.vec2(110, 130);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);

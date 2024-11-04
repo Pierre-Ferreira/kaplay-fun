@@ -5,6 +5,7 @@ import {
 	solvedPairsCntAtom,
 	solvedPairsForWinAtom,
 	selectedCardsTagsAtom,
+	isRoundCompletedAtom,
 } from "../store";
 import { GameObj, KAPLAYCtx, Vec2 } from "kaplay";
 
@@ -81,58 +82,63 @@ export default function addCard(
 	// onClick() comes from area() component
 	// it runs once when the object is clicked
 	card.onClick(() => {
-		// Only continue if the card is not solved and card is allowed to be revealed.
-		if (!card.card_solved && card.card_reveal_allowed) {
-			// Prevent card from being reveal, until reset of card.
-			card.card_reveal_allowed = false;
-			// Check if the same card was clicked.
-			let notSameCardSelected = true;
-			let selected_cards_tags: {
-				card_tag: string;
-				unique_id_tag: string;
-			}[] = [];
-			selected_cards_tags = store.get(selectedCardsTagsAtom);
-			if (selected_cards_tags[0] !== undefined) {
-				if (unique_id_tag === selected_cards_tags[0].unique_id_tag) {
-					notSameCardSelected = false;
+		const isRoundCompleted = store.get(isRoundCompletedAtom);
+		console.log("isRoundCompleted: ", isRoundCompleted);
+		// If round is completed (win or fail) prevent any card clicks.
+		if (!isRoundCompleted) {
+			// Only continue if the card is not solved and card is allowed to be revealed.
+			if (!card.card_solved && card.card_reveal_allowed) {
+				// Prevent card from being reveal, until reset of card.
+				card.card_reveal_allowed = false;
+				// Check if the same card was clicked.
+				let notSameCardSelected = true;
+				let selected_cards_tags: {
+					card_tag: string;
+					unique_id_tag: string;
+				}[] = [];
+				selected_cards_tags = store.get(selectedCardsTagsAtom);
+				if (selected_cards_tags[0] !== undefined) {
+					if (unique_id_tag === selected_cards_tags[0].unique_id_tag) {
+						notSameCardSelected = false;
+					}
 				}
-			}
-			// If the same card was not selected, then continue.
-			if (notSameCardSelected) {
-				// Remove card concealer child.
-				destroyChildrenOfGameObject(card, "card-concealer");
-				// Display the card picture child.
-				card.add(createCardPicture());
-				// Set color of selected card and hover properties.
-				card.color = k.RED;
-				card.onHoverUpdate(() => {
+				// If the same card was not selected, then continue.
+				if (notSameCardSelected) {
+					// Remove card concealer child.
+					destroyChildrenOfGameObject(card, "card-concealer");
+					// Display the card picture child.
+					card.add(createCardPicture());
+					// Set color of selected card and hover properties.
 					card.color = k.RED;
-					card.scale = k.vec2(1);
-				});
-				card.onHoverEnd(() => {
-					card.color = k.RED;
-					card.scale = k.vec2(1);
-				});
+					card.onHoverUpdate(() => {
+						card.color = k.RED;
+						card.scale = k.vec2(1);
+					});
+					card.onHoverEnd(() => {
+						card.color = k.RED;
+						card.scale = k.vec2(1);
+					});
 
-				// Create card object and push it to selected card array.
-				const cardObj = {
-					card_tag,
-					unique_id_tag,
-				};
-				selected_cards_tags.push(cardObj);
+					// Create card object and push it to selected card array.
+					const cardObj = {
+						card_tag,
+						unique_id_tag,
+					};
+					selected_cards_tags.push(cardObj);
 
-				// Increase the number of cards selected.
-				let no_of_cards_selected: number = store.get(noOfCardsSelectedAtom);
-				no_of_cards_selected += 1;
-				store.set(noOfCardsSelectedAtom, no_of_cards_selected);
-				// Check if two cards have been selected.
-				if (no_of_cards_selected >= 2) {
-					// Check if the two cards match.
-					checkCardMatch(selected_cards_tags, cardsBoard);
-					no_of_cards_selected = 0;
+					// Increase the number of cards selected.
+					let no_of_cards_selected: number = store.get(noOfCardsSelectedAtom);
+					no_of_cards_selected += 1;
 					store.set(noOfCardsSelectedAtom, no_of_cards_selected);
-					selected_cards_tags = [];
-					store.set(selectedCardsTagsAtom, []);
+					// Check if two cards have been selected.
+					if (no_of_cards_selected >= 2) {
+						// Check if the two cards match.
+						checkCardMatch(selected_cards_tags, cardsBoard);
+						no_of_cards_selected = 0;
+						store.set(noOfCardsSelectedAtom, no_of_cards_selected);
+						selected_cards_tags = [];
+						store.set(selectedCardsTagsAtom, []);
+					}
 				}
 			}
 		}

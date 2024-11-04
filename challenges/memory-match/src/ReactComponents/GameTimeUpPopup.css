@@ -12,17 +12,19 @@
 }
 
 .timeup-popup-box > p {
+	position: relative;
 	margin-top: 64px;
 	margin-bottom: 12px;
 	margin-left: 64px;
 	margin-right: 64px;
 	font-size: 60px;
+	left: 20px;
 	color: red;
 }
 
 .timeup-popup-box > button {
 	position: relative;
-	top: 50px;
+	top: 30px;
 	left: 120px;
 	width: 350px;
 	height: 100px;
