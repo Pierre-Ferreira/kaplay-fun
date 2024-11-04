@@ -1,4 +1,4 @@
-import { GameObj, Vec2 } from "kaplay";
+import { Color, GameObj, Vec2 } from "kaplay";
 import initKaplay from "../kaplayCtx";
 import {
 	store,
@@ -18,7 +18,7 @@ export default function initGame() {
 	const k = initKaplay();
 	k.setBackground(135, 62, 132);
 	k.loadSprite("cardConcealer", "/icons/cluesified-icon-main.png");
-	// k.loadFont("starborn", `starborn.tff`);
+	k.loadFont("starborn", "/fonts/starborn.ttf");
 
 	k.scene(
 		"memory_match_game",
@@ -53,10 +53,12 @@ export default function initGame() {
 				"infoboard",
 			]);
 			const timerPos: Vec2 = k.vec2(-(infoBoardSize.x / 2) + 50, -20);
-			const timer = infoBoard.add([
-				k.text(`0/${maxGameTimeSec}s`),
+			const timer: GameObj = infoBoard.add([
+				k.text(`TIME:\r\n0/${maxGameTimeSec.toFixed(2)}`, {
+					size: 20,
+					font: "starborn",
+				}),
 				k.pos(timerPos),
-				// k.font = "starborn";
 				k.fixed(),
 				{ time: 0 },
 			]);
@@ -64,9 +66,13 @@ export default function initGame() {
 			timer.onUpdate(() => {
 				timer.time += k.dt();
 				if (timer.time < maxGameTimeSec) {
-					timer.text = `${timer.time.toFixed(2)}/${maxGameTimeSec}s`;
+					timer.text = `TIME:\r\n${timer.time.toFixed(2)}/${maxGameTimeSec}`;
 				} else {
-					timer.text = `${maxGameTimeSec.toFixed(2)}/${maxGameTimeSec}s`;
+					timer.text = `TIME:\r\n${maxGameTimeSec.toFixed(2)}`;
+					// timer. = {color: k.RED}
+					timer.textSize = 35;
+					timer.color = k.RED;
+					timer.pos = k.vec2(timerPos.x, timerPos.y - 15);
 					console.log("GAME COMPLETED!");
 					store.set(isGameTimeUpAtom, true);
 					store.set(isGameCompletedAtom, true);
@@ -74,8 +80,8 @@ export default function initGame() {
 			});
 			const doomCounter: GameObj = infoBoard.add([
 				k.text("CHANCES LEFT:", {
-					size: 30,
-					// font: "starborn",
+					size: 40,
+					font: "starborn",
 				}),
 				k.pos(0, 0),
 				k.anchor("center"),
@@ -339,7 +345,7 @@ export default function initGame() {
 	const solvedPairsForWin: number = images.length;
 	store.set(solvedPairsForWinAtom, solvedPairsForWin);
 
-	const maxGameTimeSec: number = 3;
+	const maxGameTimeSec: number = 10;
 	const maxCardsInRow: number = 5;
 	const cardSize: Vec2 = k.vec2(110, 130);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);
