@@ -90,8 +90,10 @@ export default function initGame() {
 				const cntDoomCounter: number = store.get(cntDoomCounterAtom);
 				if (cntDoomCounter > 3) {
 					doomCounter.text = `CHANCES LEFT: ${cntDoomCounter}`;
+					doomCounter.size = 40;
 				} else {
 					doomCounter.text = `DOOM IN: ${cntDoomCounter}`;
+					doomCounter.fontSize = 60;
 				}
 				// doomCounter.font = "starborn";
 			});
@@ -339,7 +341,7 @@ export default function initGame() {
 	];
 
 	// Initiate game variables.
-	const cntDoomCounter: number = 12;
+	const cntDoomCounter: number = 4;
 	store.set(cntDoomCounterAtom, cntDoomCounter);
 
 	const solvedPairsForWin: number = images.length;

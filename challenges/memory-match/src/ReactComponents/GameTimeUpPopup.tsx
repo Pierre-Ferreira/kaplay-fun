@@ -1,12 +1,12 @@
 // import { useAtomValue } from "jotai";
 // import { isFailSignVisibleAtom } from "../store";
-import "./GameFailPopup.css";
+import "./GameTimeUpPopup.css";
 
-export default function GameFailPopup() {
+export default function GameTimeUpPopup() {
 	return (
-		<div className="text-box">
+		<div className="timeup-popup-box">
 			<p>TIME IS UP!</p>
-			<button>CONTINUE</button>
+			<button>CONTINUE...</button>
 		</div>
 	);
 }

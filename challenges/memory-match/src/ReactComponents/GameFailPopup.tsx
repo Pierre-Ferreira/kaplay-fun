@@ -4,7 +4,7 @@ import "./GameFailPopup.css";
 
 export default function GameFailPopup() {
 	return (
-		<div className="text-box">
+		<div className="fail-popup-box">
 			<p>FAIL!</p>
 			<button>Try Again!</button>
 		</div>

@@ -1,4 +1,4 @@
-.text-box {
+.fail-popup-box {
 	position: relative;
 	top: 700px;
 	left: 60px;
@@ -10,7 +10,7 @@
 	font-family: "starborn";
 }
 
-.text-box > p {
+.fail-popup-box > p {
 	margin-top: 64px;
 	margin-bottom: 12px;
 	margin-left: 64px;
