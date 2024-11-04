@@ -310,14 +310,14 @@ export default function initGame() {
 	const images: string[] = [
 		"apple",
 		"pineapple",
-		"bean",
-		"palm_tree",
-		"gigagantrum",
-		"eben-etzebeth",
-		"siya-kolisi",
-		"dolphin",
-		"bag",
-		"bobo",
+		// "bean",
+		// "palm_tree",
+		// "gigagantrum",
+		// "eben-etzebeth",
+		// "siya-kolisi",
+		// "dolphin",
+		// "bag",
+		// "bobo",
 		// "michael_scott",
 		// "cloud",
 		// "coin",
@@ -347,7 +347,7 @@ export default function initGame() {
 	const solvedPairsForWin: number = images.length;
 	store.set(solvedPairsForWinAtom, solvedPairsForWin);
 
-	const maxGameTimeSec: number = 10;
+	const maxGameTimeSec: number = 600;
 	const maxCardsInRow: number = 5;
 	const cardSize: Vec2 = k.vec2(110, 130);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);

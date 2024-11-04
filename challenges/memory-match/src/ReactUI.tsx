@@ -6,13 +6,16 @@ import { isFailSignVisibleAtom } from "./store";
 import { isWinSignVisibleAtom } from "./store";
 import { isGameTimeUpAtom } from "./store";
 export default function ReactUI() {
-	if (useAtomValue(isFailSignVisibleAtom) === true) {
+	const isFailSignVisible: boolean = useAtomValue(isFailSignVisibleAtom);
+	const isWinSignVisible: boolean = useAtomValue(isWinSignVisibleAtom);
+	const isGameTimeUp: boolean = useAtomValue(isGameTimeUpAtom);
+	if (isFailSignVisible === true) {
 		return <>{<GameFailPopup />}</>;
 	}
-	if (useAtomValue(isWinSignVisibleAtom) === true) {
+	if (isWinSignVisible === true) {
 		return <>{<GameWinPopup />}</>;
 	}
-	if (useAtomValue(isGameTimeUpAtom) === true) {
+	if (isGameTimeUp === true) {
 		return <>{<GameTimeUpPopup />}</>;
 	}
 }
