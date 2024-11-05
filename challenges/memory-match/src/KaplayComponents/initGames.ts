@@ -12,6 +12,7 @@ import {
 	isWinSignVisibleAtom,
 	isGameTimeUpAtom,
 	isRoundCompletedAtom,
+	initDoomCounterAtom,
 } from "../store";
 import addCard from "./addCard";
 
@@ -112,12 +113,12 @@ export default function initGame() {
 				"gameboard",
 			]);
 			gameBoard.onUpdate(() => {
-				// Check if the game has been completed.
 				const solvedPairsCnt: number = store.get(solvedPairsCntAtom);
 				const solvedPairsForWin: number = store.get(solvedPairsForWinAtom);
-
+				// Check if the game has been completed.
 				if (solvedPairsCnt >= solvedPairsForWin) {
 					// console.log("GAME COMPLETED!");
+					// Game/Round has been WON.
 					store.set(isRoundCompletedAtom, true);
 					store.set(isWinSignVisibleAtom, true);
 					store.set(isGameCompletedAtom, true);
@@ -125,10 +126,11 @@ export default function initGame() {
 					const cntDoomCounter: number = store.get(cntDoomCounterAtom);
 					if (cntDoomCounter <= 0) {
 						// console.log("GAME FAILED!");
+						// Round has been been lost.
 						store.set(isRoundCompletedAtom, true);
 						store.set(isFailSignVisibleAtom, true);
-						const cntDoomCounter: number = 14;
-						store.set(cntDoomCounterAtom, cntDoomCounter);
+						const initDoomCounter: number = store.get(initDoomCounterAtom);
+						store.set(cntDoomCounterAtom, initDoomCounter);
 						store.set(solvedPairsCntAtom, 0);
 						store.set(selectedCardsTagsAtom, []);
 						// Destroy the cardboard and all the children.
@@ -315,15 +317,15 @@ export default function initGame() {
 
 	const images: string[] = [
 		"apple",
-		"pineapple",
-		"bean",
-		"palm_tree",
-		"gigagantrum",
-		"eben-etzebeth",
-		"siya-kolisi",
-		"dolphin",
-		"bag",
-		"bobo",
+		// "pineapple",
+		// "bean",
+		// "palm_tree",
+		// "gigagantrum",
+		// "eben-etzebeth",
+		// "siya-kolisi",
+		// "dolphin",
+		// "bag",
+		// "bobo",
 		// "michael_scott",
 		// "cloud",
 		// "coin",
@@ -348,12 +350,13 @@ export default function initGame() {
 
 	// Initiate game variables.
 	const cntDoomCounter: number = 4;
+	store.set(initDoomCounterAtom, cntDoomCounter);
 	store.set(cntDoomCounterAtom, cntDoomCounter);
 
 	const solvedPairsForWin: number = images.length;
 	store.set(solvedPairsForWinAtom, solvedPairsForWin);
 
-	const maxGameTimeSec: number = 3;
+	const maxGameTimeSec: number = 30;
 	const maxCardsInRow: number = 5;
 	const cardSize: Vec2 = k.vec2(110, 130);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);
