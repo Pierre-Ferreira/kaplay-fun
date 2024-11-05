@@ -34,4 +34,7 @@
 	font-family: "starborn";
 	border-radius: 12px;
 	cursor: pointer; /* Show pointer on hover */
+	z-index: 100;
+	user-select: auto;
+	pointer-events: auto;
 }

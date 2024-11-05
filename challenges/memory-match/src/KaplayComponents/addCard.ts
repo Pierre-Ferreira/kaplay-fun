@@ -138,6 +138,8 @@ export default function addCard(
 						store.set(noOfCardsSelectedAtom, no_of_cards_selected);
 						selected_cards_tags = [];
 						store.set(selectedCardsTagsAtom, []);
+					} else {
+						k.play("select-card");
 					}
 				}
 			}
@@ -159,6 +161,7 @@ export default function addCard(
 		) {
 			console.log("MATCHING!!!");
 			// MATCHING cards.
+			k.play("matching-cards");
 			let solvedPairsCnt: number = store.get(solvedPairsCntAtom);
 			solvedPairsCnt += 1;
 			store.set(solvedPairsCntAtom, solvedPairsCnt);
@@ -177,6 +180,7 @@ export default function addCard(
 			});
 		} else {
 			console.log("NOT MATCHING!!!");
+			k.play("select-card");
 			//Update Doom Counter.
 			let cntDoomCounter: number = store.get(cntDoomCounterAtom);
 			cntDoomCounter -= 1;
@@ -209,6 +213,7 @@ export default function addCard(
 	}
 
 	function resetCard(card: GameObj, tag: string) {
+		k.play("deselect-card");
 		// Destroy the card picture child.
 		destroyChildrenOfGameObject(card, tag);
 		// Add the card concealer child.

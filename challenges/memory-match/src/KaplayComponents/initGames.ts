@@ -1,4 +1,4 @@
-import { Color, GameObj, Vec2 } from "kaplay";
+import { GameObj, Vec2 } from "kaplay";
 import initKaplay from "../kaplayCtx";
 import {
 	store,
@@ -13,14 +13,17 @@ import {
 	isGameTimeUpAtom,
 	isRoundCompletedAtom,
 	initDoomCounterAtom,
+	runNewGameFlagAtom,
 } from "../store";
 import addCard from "./addCard";
-
 export default function initGame() {
 	const k = initKaplay();
 	k.setBackground(135, 62, 132);
 	k.loadSprite("cardConcealer", "/icons/cluesified-icon-main.png");
 	k.loadFont("starborn", "/fonts/starborn.ttf");
+	k.loadSound("select-card", "/sounds/select-sound.mp3");
+	k.loadSound("deselect-card", "/sounds/wood-effect.mp3");
+	k.loadSound("matching-cards", "/sounds/pop-sound-effect.mp3");
 
 	k.scene(
 		"memory_match_game",
@@ -71,7 +74,6 @@ export default function initGame() {
 					timer.text = `TIME:\r\n${timer.time.toFixed(2)}/${maxGameTimeSec}`;
 				} else {
 					timer.text = `TIME:\r\n${maxGameTimeSec.toFixed(2)}`;
-					// timer. = {color: k.RED}
 					timer.textSize = 35;
 					timer.color = k.RED;
 					timer.pos = k.vec2(timerPos.x, timerPos.y - 15);
@@ -86,6 +88,7 @@ export default function initGame() {
 					size: 40,
 					font: "starborn",
 				}),
+				k.color(k.WHITE),
 				k.pos(0, 0),
 				k.anchor("center"),
 			]);
@@ -93,12 +96,13 @@ export default function initGame() {
 				const cntDoomCounter: number = store.get(cntDoomCounterAtom);
 				if (cntDoomCounter > 3) {
 					doomCounter.text = `CHANCES LEFT: ${cntDoomCounter}`;
-					doomCounter.size = 40;
+					doomCounter.textSize = 40;
+					doomCounter.color = k.WHITE;
 				} else {
 					doomCounter.text = `DOOM IN: ${cntDoomCounter}`;
-					doomCounter.fontSize = 60;
+					doomCounter.textSize = 60;
+					doomCounter.color = k.RED;
 				}
-				// doomCounter.font = "starborn";
 			});
 
 			// Add the Gameboard.
@@ -125,31 +129,39 @@ export default function initGame() {
 				} else {
 					const cntDoomCounter: number = store.get(cntDoomCounterAtom);
 					if (cntDoomCounter <= 0) {
-						// console.log("GAME FAILED!");
-						// Round has been been lost.
-						store.set(isRoundCompletedAtom, true);
-						store.set(isFailSignVisibleAtom, true);
-						const initDoomCounter: number = store.get(initDoomCounterAtom);
-						store.set(cntDoomCounterAtom, initDoomCounter);
-						store.set(solvedPairsCntAtom, 0);
-						store.set(selectedCardsTagsAtom, []);
-						// Destroy the cardboard and all the children.
-						let cntRounds: number = store.get(cntRoundsAtom);
-						const cardsBoard: GameObj = arrCardboardRounds[cntRounds];
-						cardsBoard.get("cards").forEach((card: GameObj) => {
-							card.get("card-concealer").forEach((card_concealer: GameObj) => {
-								k.destroy(card_concealer);
+						// Check if a new round needs to be restarted.
+						const runNewGameFlag = store.get(runNewGameFlagAtom);
+						if (!runNewGameFlag) {
+							// console.log("GAME FAILED!");
+							// Round has been been lost.
+							store.set(isRoundCompletedAtom, true);
+							store.set(isFailSignVisibleAtom, true);
+						} else {
+							const initDoomCounter: number = store.get(initDoomCounterAtom);
+							store.set(cntDoomCounterAtom, initDoomCounter);
+							store.set(runNewGameFlagAtom, false);
+							store.set(solvedPairsCntAtom, 0);
+							store.set(selectedCardsTagsAtom, []);
+							// Destroy the cardboard and all the children.
+							let cntRounds: number = store.get(cntRoundsAtom);
+							const cardsBoard: GameObj = arrCardboardRounds[cntRounds];
+							cardsBoard.get("cards").forEach((card: GameObj) => {
+								card
+									.get("card-concealer")
+									.forEach((card_concealer: GameObj) => {
+										k.destroy(card_concealer);
+									});
+								card.get("card-picture").forEach((card_pictures: GameObj) => {
+									k.destroy(card_pictures);
+								});
+								k.destroy(card);
 							});
-							card.get("card-picture").forEach((card_pictures: GameObj) => {
-								k.destroy(card_pictures);
-							});
-							k.destroy(card);
-						});
-						k.destroy(cardsBoard);
-						// Start a new game and save the cardboard the array.
-						cntRounds += 1;
-						arrCardboardRounds[cntRounds] = runNewGame();
-						store.set(cntRoundsAtom, cntRounds);
+							k.destroy(cardsBoard);
+							// Start a new game and save the cardboard the array.
+							cntRounds += 1;
+							arrCardboardRounds[cntRounds] = runNewGame();
+							store.set(cntRoundsAtom, cntRounds);
+						}
 					}
 				}
 			});
@@ -317,15 +329,15 @@ export default function initGame() {
 
 	const images: string[] = [
 		"apple",
-		// "pineapple",
-		// "bean",
-		// "palm_tree",
-		// "gigagantrum",
-		// "eben-etzebeth",
-		// "siya-kolisi",
-		// "dolphin",
-		// "bag",
-		// "bobo",
+		"pineapple",
+		"bean",
+		"palm_tree",
+		"gigagantrum",
+		"eben-etzebeth",
+		"siya-kolisi",
+		"dolphin",
+		"bag",
+		"bobo",
 		// "michael_scott",
 		// "cloud",
 		// "coin",
@@ -349,14 +361,14 @@ export default function initGame() {
 	];
 
 	// Initiate game variables.
-	const cntDoomCounter: number = 4;
+	const cntDoomCounter: number = 12;
 	store.set(initDoomCounterAtom, cntDoomCounter);
 	store.set(cntDoomCounterAtom, cntDoomCounter);
 
 	const solvedPairsForWin: number = images.length;
 	store.set(solvedPairsForWinAtom, solvedPairsForWin);
 
-	const maxGameTimeSec: number = 30;
+	const maxGameTimeSec: number = 300;
 	const maxCardsInRow: number = 5;
 	const cardSize: Vec2 = k.vec2(110, 130);
 	const infoBoardPos: Vec2 = k.vec2(500, 65);
