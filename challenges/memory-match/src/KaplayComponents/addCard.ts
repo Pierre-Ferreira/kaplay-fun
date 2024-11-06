@@ -181,6 +181,7 @@ export default function addCard(
 		} else {
 			console.log("NOT MATCHING!!!");
 			k.play("select-card");
+			k.play("deselect-card");
 			//Update Doom Counter.
 			let cntDoomCounter: number = store.get(cntDoomCounterAtom);
 			cntDoomCounter -= 1;
@@ -213,7 +214,6 @@ export default function addCard(
 	}
 
 	function resetCard(card: GameObj, tag: string) {
-		k.play("deselect-card");
 		// Destroy the card picture child.
 		destroyChildrenOfGameObject(card, tag);
 		// Add the card concealer child.

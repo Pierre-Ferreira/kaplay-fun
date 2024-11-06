@@ -24,6 +24,7 @@ export default function initGame() {
 	k.loadSound("select-card", "/sounds/select-sound.mp3");
 	k.loadSound("deselect-card", "/sounds/wood-effect.mp3");
 	k.loadSound("matching-cards", "/sounds/pop-sound-effect.mp3");
+	k.loadSound("round-failure", "/sounds/round-failure.wav");
 
 	k.scene(
 		"memory_match_game",
@@ -134,6 +135,7 @@ export default function initGame() {
 						if (!runNewGameFlag) {
 							// console.log("GAME FAILED!");
 							// Round has been been lost.
+							// k.play("round-failure");
 							store.set(isRoundCompletedAtom, true);
 							store.set(isFailSignVisibleAtom, true);
 						} else {
