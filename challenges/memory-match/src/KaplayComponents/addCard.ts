@@ -42,25 +42,14 @@ export default function addCard(
 
 	// Function to create a card concealer.
 	function createCardConcealer() {
-		return [
-			k.sprite("cardConcealer"),
-			k.anchor("center"),
-			k.area(),
-			"card-concealer",
-		];
+		return [k.sprite("cardConcealer"), k.anchor("center"), k.area(), "card-concealer"];
 	}
 	// Add a card concealer as a child to the card
 	card.add(createCardConcealer());
 
 	// Function to create a card picture
 	function createCardPicture() {
-		return [
-			k.sprite(card_tag),
-			k.anchor("center"),
-			k.area(),
-			unique_id_tag,
-			"card-picture",
-		];
+		return [k.sprite(card_tag), k.anchor("center"), k.area(), unique_id_tag, "card-picture"];
 	}
 
 	// onHoverUpdate() comes from area() component
@@ -83,7 +72,6 @@ export default function addCard(
 	// it runs once when the object is clicked
 	card.onClick(() => {
 		const isRoundCompleted = store.get(isRoundCompletedAtom);
-		console.log("isRoundCompleted: ", isRoundCompleted);
 		// If round is completed (win or fail) prevent any card clicks.
 		if (!isRoundCompleted) {
 			// Only continue if the card is not solved and card is allowed to be revealed.
@@ -147,19 +135,14 @@ export default function addCard(
 	});
 
 	// Function to check if the two cards selected have matching tags.
-	function checkCardMatch(
-		selected_cards_tags: { card_tag: string; unique_id_tag: string }[],
-		cardsBoard: GameObj
-	) {
+	function checkCardMatch(selected_cards_tags: { card_tag: string; unique_id_tag: string }[], cardsBoard: GameObj) {
 		// Store the selected cards in local variables to capture their values in this scope
 		const firstSelectedCardArrObj = selected_cards_tags[0];
 		const secondSelectedCardArrObj = selected_cards_tags[1];
 
 		// Check if the first card and second card selected have matching tags.
-		if (
-			firstSelectedCardArrObj.card_tag === secondSelectedCardArrObj.card_tag
-		) {
-			console.log("MATCHING!!!");
+		if (firstSelectedCardArrObj.card_tag === secondSelectedCardArrObj.card_tag) {
+			// console.log("MATCHING!!!");
 			// MATCHING cards.
 			k.play("matching-cards");
 			let solvedPairsCnt: number = store.get(solvedPairsCntAtom);
@@ -179,7 +162,7 @@ export default function addCard(
 				});
 			});
 		} else {
-			console.log("NOT MATCHING!!!");
+			// console.log("NOT MATCHING!!!");
 			k.play("select-card");
 			k.play("deselect-card");
 			//Update Doom Counter.
@@ -189,17 +172,13 @@ export default function addCard(
 			// Pause for split seconds before resetting unmatched cards.
 			k.wait(0.6, () => {
 				// Reset first selected card.
-				cardsBoard
-					.get(firstSelectedCardArrObj.unique_id_tag)
-					.forEach((e1: GameObj) => {
-						resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
-					});
+				cardsBoard.get(firstSelectedCardArrObj.unique_id_tag).forEach((e1: GameObj) => {
+					resetCard(e1, firstSelectedCardArrObj.unique_id_tag);
+				});
 				// Reset second selected card.
-				cardsBoard
-					.get(secondSelectedCardArrObj.unique_id_tag)
-					.forEach((e2: GameObj) => {
-						resetCard(e2, secondSelectedCardArrObj.unique_id_tag);
-					});
+				cardsBoard.get(secondSelectedCardArrObj.unique_id_tag).forEach((e2: GameObj) => {
+					resetCard(e2, secondSelectedCardArrObj.unique_id_tag);
+				});
 			});
 		}
 	}

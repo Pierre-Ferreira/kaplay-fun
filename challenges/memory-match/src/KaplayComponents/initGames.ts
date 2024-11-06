@@ -14,6 +14,7 @@ import {
 	isRoundCompletedAtom,
 	initDoomCounterAtom,
 	runNewGameFlagAtom,
+	cntPlayFailRoundSoundAtom,
 } from "../store";
 import addCard from "./addCard";
 export default function initGame() {
@@ -23,8 +24,9 @@ export default function initGame() {
 	k.loadFont("starborn", "/fonts/starborn.ttf");
 	k.loadSound("select-card", "/sounds/select-sound.mp3");
 	k.loadSound("deselect-card", "/sounds/wood-effect.mp3");
-	k.loadSound("matching-cards", "/sounds/pop-sound-effect.mp3");
-	k.loadSound("round-failure", "/sounds/round-failure.wav");
+	k.loadSound("matching-cards", "/sounds/cork-pop.wav");
+	k.loadSound("round-failure", "/sounds/failed-round.wav");
+	k.loadSound("background", "/sounds/background/its-nonsense-&-flying-pots.mp3");
 
 	k.scene(
 		"memory_match_game",
@@ -43,7 +45,10 @@ export default function initGame() {
 		) => {
 			// reset cursor to default on frame start for easier cursor management.
 			k.onUpdate(() => k.setCursor("default"));
-
+			k.play("background", {
+				volume: 0.8,
+				loop: true,
+			});
 			// Array for cardboard per round.
 			const arrCardboardRounds: GameObj[] = [];
 
@@ -132,10 +137,15 @@ export default function initGame() {
 					if (cntDoomCounter <= 0) {
 						// Check if a new round needs to be restarted.
 						const runNewGameFlag = store.get(runNewGameFlagAtom);
+						let cntPlayFailRoundSound: number = store.get(cntPlayFailRoundSoundAtom);
+						cntPlayFailRoundSound += 1;
+						store.set(cntPlayFailRoundSoundAtom, cntPlayFailRoundSound);
+						// console.log("GAME FAILED!");
 						if (!runNewGameFlag) {
-							// console.log("GAME FAILED!");
 							// Round has been been lost.
-							// k.play("round-failure");
+							if (cntPlayFailRoundSound === 1) {
+								k.play("round-failure");
+							}
 							store.set(isRoundCompletedAtom, true);
 							store.set(isFailSignVisibleAtom, true);
 						} else {
@@ -148,11 +158,9 @@ export default function initGame() {
 							let cntRounds: number = store.get(cntRoundsAtom);
 							const cardsBoard: GameObj = arrCardboardRounds[cntRounds];
 							cardsBoard.get("cards").forEach((card: GameObj) => {
-								card
-									.get("card-concealer")
-									.forEach((card_concealer: GameObj) => {
-										k.destroy(card_concealer);
-									});
+								card.get("card-concealer").forEach((card_concealer: GameObj) => {
+									k.destroy(card_concealer);
+								});
 								card.get("card-picture").forEach((card_pictures: GameObj) => {
 									k.destroy(card_pictures);
 								});
@@ -188,11 +196,7 @@ export default function initGame() {
 					x_offset: number;
 				}
 
-				function x_CoordinatesOfCardsSetup({
-					maxCardsInRow,
-					x_start_pos,
-					x_offset,
-				}: x_CoordinatesOfCardsSetupOptions): number[] {
+				function x_CoordinatesOfCardsSetup({ maxCardsInRow, x_start_pos, x_offset }: x_CoordinatesOfCardsSetupOptions): number[] {
 					let x_pos: number = 0;
 					const x_CoordinatesArray: number[] = [];
 					for (let x = 0; x < maxCardsInRow; x++) {
@@ -239,22 +243,13 @@ export default function initGame() {
 					images: string[];
 					xy_PostionArray: Coordinates[];
 				}
-				function displayCards({
-					images,
-					xy_PostionArray,
-				}: displayCardsOptions): void {
+				function displayCards({ images, xy_PostionArray }: displayCardsOptions): void {
 					let pickedCoordinates = [];
 					for (const image of images) {
 						k.loadSprite(image, `./sprites/cards/${image}.png`);
 						pickedCoordinates = pickAndRemoveTwo(xy_PostionArray);
-						const cardGlobalPos_0: Vec2 = k.vec2(
-							gameBoard.pos.x + pickedCoordinates[0].x,
-							gameBoard.pos.y + pickedCoordinates[0].y
-						);
-						const cardGlobalPos_1: Vec2 = k.vec2(
-							gameBoard.pos.x + pickedCoordinates[1].x,
-							gameBoard.pos.y + pickedCoordinates[1].y
-						);
+						const cardGlobalPos_0: Vec2 = k.vec2(gameBoard.pos.x + pickedCoordinates[0].x, gameBoard.pos.y + pickedCoordinates[0].y);
+						const cardGlobalPos_1: Vec2 = k.vec2(gameBoard.pos.x + pickedCoordinates[1].x, gameBoard.pos.y + pickedCoordinates[1].y);
 						addCard(
 							k.vec2(pickedCoordinates[0].x, pickedCoordinates[0].y),
 							image,
@@ -363,7 +358,7 @@ export default function initGame() {
 	];
 
 	// Initiate game variables.
-	const cntDoomCounter: number = 12;
+	const cntDoomCounter: number = 5;
 	store.set(initDoomCounterAtom, cntDoomCounter);
 	store.set(cntDoomCounterAtom, cntDoomCounter);
 
@@ -380,10 +375,8 @@ export default function initGame() {
 	const x_spaces: number = 30;
 	const y_spaces: number = 20;
 	const totalCardRows: number = Math.floor((images.length * 2) / maxCardsInRow);
-	const cardsBoardWidth: number =
-		maxCardsInRow * (cardSize.x + x_spaces) - x_spaces;
-	const cardsBoardHeight: number =
-		totalCardRows * (cardSize.y + y_spaces) - y_spaces;
+	const cardsBoardWidth: number = maxCardsInRow * (cardSize.x + x_spaces) - x_spaces;
+	const cardsBoardHeight: number = totalCardRows * (cardSize.y + y_spaces) - y_spaces;
 	const cardsBoardSize: Vec2 = k.vec2(cardsBoardWidth, cardsBoardHeight);
 
 	console.log("Start game.");
