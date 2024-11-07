@@ -5,15 +5,15 @@ import "./GameFailPopup.css";
 export default function GameFailPopup() {
 	//ignore-lint
 
-	const setFailSignVisible = useSetAtom(isFailSignVisibleAtom);
-	const setRunNewGameFlag = useSetAtom(runNewGameFlagAtom);
-	const setCntPlayFailRoundSound = useSetAtom(cntPlayFailRoundSoundAtom);
+	const setFailSignVisibleAtom = useSetAtom(isFailSignVisibleAtom);
+	const setRunNewGameFlagStom = useSetAtom(runNewGameFlagAtom);
+	const setCntPlayFailRoundSoundAtom = useSetAtom(cntPlayFailRoundSoundAtom);
 
 	const closePopup = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
-		setFailSignVisible(false);
-		setRunNewGameFlag(true);
-		setCntPlayFailRoundSound(-1);
+		setFailSignVisibleAtom(false);
+		setRunNewGameFlagStom(true);
+		setCntPlayFailRoundSoundAtom(-1);
 	};
 	return (
 		<div className="fail-popup-box">
