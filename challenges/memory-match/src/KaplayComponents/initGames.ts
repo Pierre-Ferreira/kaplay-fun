@@ -16,6 +16,7 @@ import {
 	runNewGameFlagAtom,
 	cntPlayFailRoundSoundAtom,
 	cntPlayGameWonSoundAtom,
+	cntPlayTimeupSoundAtom,
 } from "../store";
 import addCard from "./addCard";
 export default function initGame() {
@@ -28,20 +29,21 @@ export default function initGame() {
 	k.loadSound("matching-cards", "/sounds/cork-pop.wav");
 	k.loadSound("round-failure", "/sounds/failed-round.wav");
 	k.loadSound("win-game", "/sounds/win-game.wav");
+	k.loadSound("timeup", "/sounds/timeup.wav");
 	k.loadSound("background-music", "/sounds/background/its-nonsense-&-flying-pots.mp3");
 
 	k.scene("memory_match_game", () => {
 		const images: string[] = [
 			"apple",
 			"pineapple",
-			"bean",
-			"palm_tree",
-			"gigagantrum",
-			"eben-etzebeth",
-			"siya-kolisi",
-			"dolphin",
-			"bag",
-			"bobo",
+			// "bean",
+			// "palm_tree",
+			// "gigagantrum",
+			// "eben-etzebeth",
+			// "siya-kolisi",
+			// "dolphin",
+			// "bag",
+			// "bobo",
 			// "michael_scott",
 			// "cloud",
 			// "coin",
@@ -65,14 +67,14 @@ export default function initGame() {
 		];
 
 		// Initiate game variables.
-		const cntDoomCounter: number = 12;
+		const cntDoomCounter: number = 2;
 		store.set(initDoomCounterAtom, cntDoomCounter);
 		store.set(cntDoomCounterAtom, cntDoomCounter);
 
 		const solvedPairsForWin: number = images.length;
 		store.set(solvedPairsForWinAtom, solvedPairsForWin);
 
-		const maxGameTimeSec: number = 300;
+		const maxGameTimeSec: number = 10;
 		const maxCardsInRow: number = 5;
 		const cardSize: Vec2 = k.vec2(110, 130);
 		const infoBoardPos: Vec2 = k.vec2(500, 65);
@@ -128,7 +130,17 @@ export default function initGame() {
 				timer.color = k.RED;
 				timer.pos = k.vec2(timerPos.x, timerPos.y - 15);
 				// console.log("GAME COMPLETED!");
-				backgroundMusic.volume = 0.2;
+				let cntPlayTimeupSound: number = store.get(cntPlayTimeupSoundAtom);
+				cntPlayTimeupSound += 1;
+				store.set(cntPlayTimeupSoundAtom, cntPlayTimeupSound);
+				// Play sound only on 1 (once) otherwise it repeats on each update run
+				if (cntPlayTimeupSound === 1) {
+					backgroundMusic.volume = 0.2;
+					k.play("timeup", {
+						volume: 0.7,
+					});
+				}
+				store.set(isFailSignVisibleAtom, false);
 				store.set(isRoundCompletedAtom, true);
 				store.set(isGameTimeUpAtom, true);
 				store.set(isGameCompletedAtom, true);
@@ -204,9 +216,9 @@ export default function initGame() {
 							k.play("round-failure", {
 								volume: 0.7,
 							});
+							store.set(isFailSignVisibleAtom, true);
 						}
 						store.set(isRoundCompletedAtom, true);
-						store.set(isFailSignVisibleAtom, true);
 					} else {
 						const initDoomCounter: number = store.get(initDoomCounterAtom);
 						store.set(cntDoomCounterAtom, initDoomCounter);

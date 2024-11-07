@@ -3,7 +3,6 @@ import {
 	cntDoomCounterAtom,
 	noOfCardsSelectedAtom,
 	solvedPairsCntAtom,
-	solvedPairsForWinAtom,
 	selectedCardsTagsAtom,
 	isRoundCompletedAtom,
 } from "../store";

@@ -5,7 +5,7 @@ import "./GameWinPopup.css";
 export default function GameWinPopup() {
 	return (
 		<div className="win-popup-box">
-			<p>SUCCESS!</p>
+			<p>WINNER!!!</p>
 			<button>Continue...</button>
 		</div>
 	);
