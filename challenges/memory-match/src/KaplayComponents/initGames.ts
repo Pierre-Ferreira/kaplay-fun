@@ -15,6 +15,7 @@ import {
 	initDoomCounterAtom,
 	runNewGameFlagAtom,
 	cntPlayFailRoundSoundAtom,
+	cntPlayGameWonSoundAtom,
 } from "../store";
 import addCard from "./addCard";
 export default function initGame() {
@@ -26,7 +27,8 @@ export default function initGame() {
 	k.loadSound("deselect-card", "/sounds/wood-effect.mp3");
 	k.loadSound("matching-cards", "/sounds/cork-pop.wav");
 	k.loadSound("round-failure", "/sounds/failed-round.wav");
-	k.loadSound("background", "/sounds/background/its-nonsense-&-flying-pots.mp3");
+	k.loadSound("win-game", "/sounds/win-game.wav");
+	k.loadSound("background-music", "/sounds/background/its-nonsense-&-flying-pots.mp3");
 
 	k.scene(
 		"memory_match_game",
@@ -45,7 +47,7 @@ export default function initGame() {
 		) => {
 			// reset cursor to default on frame start for easier cursor management.
 			k.onUpdate(() => k.setCursor("default"));
-			k.play("background", {
+			const backgroundMusic = k.play("background-music", {
 				volume: 0.8,
 				loop: true,
 			});
@@ -129,6 +131,16 @@ export default function initGame() {
 				if (solvedPairsCnt >= solvedPairsForWin) {
 					// console.log("GAME COMPLETED!");
 					// Game/Round has been WON.
+					let cntPlayGameWonSound: number = store.get(cntPlayGameWonSoundAtom);
+					cntPlayGameWonSound += 1;
+					store.set(cntPlayGameWonSoundAtom, cntPlayGameWonSound);
+					// Play sound only on 1 (once) otherwise it repeats on each update run
+					if (cntPlayGameWonSound === 1) {
+						backgroundMusic.volume = 0.2;
+						k.play("win-game", {
+							volume: 0.7,
+						});
+					}
 					store.set(isRoundCompletedAtom, true);
 					store.set(isWinSignVisibleAtom, true);
 					store.set(isGameCompletedAtom, true);
@@ -143,8 +155,12 @@ export default function initGame() {
 						// console.log("GAME FAILED!");
 						if (!runNewGameFlag) {
 							// Round has been been lost.
+							// Play sound only on 1 (once) otherwise it repeats on each update run
 							if (cntPlayFailRoundSound === 1) {
-								k.play("round-failure");
+								backgroundMusic.volume = 0.2;
+								k.play("round-failure", {
+									volume: 0.7,
+								});
 							}
 							store.set(isRoundCompletedAtom, true);
 							store.set(isFailSignVisibleAtom, true);
@@ -154,6 +170,7 @@ export default function initGame() {
 							store.set(runNewGameFlagAtom, false);
 							store.set(solvedPairsCntAtom, 0);
 							store.set(selectedCardsTagsAtom, []);
+							backgroundMusic.volume = 0.8;
 							// Destroy the cardboard and all the children.
 							let cntRounds: number = store.get(cntRoundsAtom);
 							const cardsBoard: GameObj = arrCardboardRounds[cntRounds];
@@ -327,14 +344,14 @@ export default function initGame() {
 	const images: string[] = [
 		"apple",
 		"pineapple",
-		"bean",
-		"palm_tree",
-		"gigagantrum",
-		"eben-etzebeth",
-		"siya-kolisi",
-		"dolphin",
-		"bag",
-		"bobo",
+		// "bean",
+		// "palm_tree",
+		// "gigagantrum",
+		// "eben-etzebeth",
+		// "siya-kolisi",
+		// "dolphin",
+		// "bag",
+		// "bobo",
 		// "michael_scott",
 		// "cloud",
 		// "coin",
@@ -358,7 +375,7 @@ export default function initGame() {
 	];
 
 	// Initiate game variables.
-	const cntDoomCounter: number = 5;
+	const cntDoomCounter: number = 2;
 	store.set(initDoomCounterAtom, cntDoomCounter);
 	store.set(cntDoomCounterAtom, cntDoomCounter);
 

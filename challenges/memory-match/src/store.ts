@@ -8,6 +8,7 @@ export const isGameCompletedAtom: PrimitiveAtom<boolean> = atom(false);
 export const isRoundCompletedAtom: PrimitiveAtom<boolean> = atom(false);
 export const runNewGameFlagAtom: PrimitiveAtom<boolean> = atom(false);
 export const cntPlayFailRoundSoundAtom: PrimitiveAtom<number> = atom(0);
+export const cntPlayGameWonSoundAtom: PrimitiveAtom<number> = atom(0);
 export const noOfCardsSelectedAtom: PrimitiveAtom<number> = atom(0);
 export const solvedPairsCntAtom: PrimitiveAtom<number> = atom(0);
 export const solvedPairsForWinAtom: PrimitiveAtom<number> = atom(0);
