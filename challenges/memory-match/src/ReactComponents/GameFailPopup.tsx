@@ -1,20 +1,19 @@
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { isFailSignVisibleAtom, runNewGameFlagAtom, cntPlayFailRoundSoundAtom } from "../store";
 import "./GameFailPopup.css";
 
 export default function GameFailPopup() {
-	let [isFailSignVisible, setFailSignVisible] = useAtom(isFailSignVisibleAtom);
-	let [runNewGameFlag, setRunNewGameFlag] = useAtom(runNewGameFlagAtom);
-	let [cntPlayFailRoundSound, setCntPlayFailRoundSound] = useAtom(cntPlayFailRoundSoundAtom);
+	//ignore-lint
+
+	const setFailSignVisible = useSetAtom(isFailSignVisibleAtom);
+	const setRunNewGameFlag = useSetAtom(runNewGameFlagAtom);
+	const setCntPlayFailRoundSound = useSetAtom(cntPlayFailRoundSoundAtom);
 
 	const closePopup = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
-		isFailSignVisible = false;
-		setFailSignVisible(isFailSignVisible);
-		runNewGameFlag = true;
-		setRunNewGameFlag(runNewGameFlag);
-		cntPlayFailRoundSound = -1;
-		setCntPlayFailRoundSound(cntPlayFailRoundSound);
+		setFailSignVisible(false);
+		setRunNewGameFlag(true);
+		setCntPlayFailRoundSound(-1);
 	};
 	return (
 		<div className="fail-popup-box">
