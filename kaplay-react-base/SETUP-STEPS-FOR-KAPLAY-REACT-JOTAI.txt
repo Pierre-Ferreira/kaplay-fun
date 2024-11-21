@@ -1,0 +1,9 @@
+Link-to-youtube-setup-kaplay-react-jotai:
+https://www.youtube.com/watch?v=w4EAML-8zGk&t=3663s
+
+Setup CMD used for this base:
+➜ npm create vite@latest base-setup
+➜ npm install kaplay@3001
+➜ npm install jotai@2.10.1
+➜ npm install react@18.3.1 
+➜ npm install react-dom@18.3.1
