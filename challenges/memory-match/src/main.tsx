@@ -9,10 +9,7 @@ import { store } from "./store.ts";
 // Calculate and set the scale of ui div.
 const ui = document.getElementById("ui") as HTMLElement | null;
 if (ui && ui.parentElement) {
-	const scale = Math.min(
-		ui.parentElement.offsetWidth / ui.offsetWidth,
-		ui.parentElement.offsetHeight / ui.offsetHeight
-	).toString(); // Convert result to a string
+	const scale = Math.min(ui.parentElement.offsetWidth / ui.offsetWidth, ui.parentElement.offsetHeight / ui.offsetHeight).toString(); // Convert result to a string
 
 	new ResizeObserver(() => {
 		document.documentElement.style.setProperty("--scale", scale);
