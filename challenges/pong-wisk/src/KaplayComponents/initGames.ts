@@ -36,9 +36,9 @@ export default function initGame() {
 
 		const ball = k.add([
 			k.pos(k.center()),
-			k.circle(16),
+			k.circle(80),
 			k.outline(4),
-			k.area({ shape: new k.Rect(k.vec2(-16), 32, 32) }),
+			k.area({ shape: new k.Rect(k.vec2(-80), 160, 160) }),
 			{ vel: k.Vec2.fromAngle(k.rand(-20, 20)) },
 		]);
 
@@ -49,7 +49,9 @@ export default function initGame() {
 				score = 0;
 				ball.pos = k.center();
 				ball.vel = k.Vec2.fromAngle(k.rand(-20, 20));
-				speed = 320;
+				speed = 480;
+				// ball.radius = 80;
+				// ball.area = { shape: new k.Rect(k.vec2(-80), 160, 160) };
 			}
 			if (ball.pos.y < 0 || ball.pos.y > k.height()) {
 				ball.vel.y = -ball.vel.y;
@@ -59,6 +61,18 @@ export default function initGame() {
 		// bounce when touch paddle
 		ball.onCollide("paddle", (p) => {
 			speed += 60;
+			const min_radius = 10;
+			let smaller_radius = ball.radius - ball.radius * 0.1;
+			if (smaller_radius < min_radius) {
+				smaller_radius = min_radius;
+			}
+			ball.radius = smaller_radius;
+			// ball.area = {
+			// 	shape: new k.Rect(k.vec2(-smaller_radius), smaller_radius * 2, smaller_radius * 2),
+			// 	scale: k.vec2(),
+			// 	offset: k.vec2(),
+			// 	cursor: null,
+			// };
 			ball.vel = k.Vec2.fromAngle(ball.pos.angle(p.pos));
 			score++;
 		});
