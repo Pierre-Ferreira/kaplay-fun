@@ -5,7 +5,6 @@ export default function initGame() {
 	// @ts-check
 
 	// kaplay();
-
 	k.loadSprite("bean", "/sprites/bean.png");
 	k.loadSound("score", "/examples/sounds/score.mp3");
 	k.loadSound("wooosh", "/examples/sounds/wooosh.mp3");
