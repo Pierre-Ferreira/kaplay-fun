@@ -13,10 +13,10 @@ export default function initGame() {
 	// define gravity
 	k.setGravity(3200);
 	k.scene("game", () => {
-		const PIPE_OPEN = 240;
+		const PIPE_OPEN = 440;
 		const PIPE_MIN = 60;
 		const JUMP_FORCE = 800;
-		const SPEED = 320;
+		const SPEED = 920;
 		const CEILING = -60;
 
 		// a game object consists of a list of components and tags
