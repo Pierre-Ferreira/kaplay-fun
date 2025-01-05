@@ -116,7 +116,7 @@ export default function initGame() {
   k.loadSound("Frieda-talk", "sounds/Frieda-talk.wav");
 
   k.scene("testing-stuff", () => {
-    const Frieda_talk_Sfx = k.play("Frieda-talk", { volume: 0.2, loop: true });
+    const Frieda_talk_Sfx = k.play("Frieda-talk", { volume: 0.1, loop: true });
     k.add([k.sprite("blue-neon-gym-1-bg"), k.pos(0, 300), k.scale(0.15)]);
     // const punk1 = k.add([
     //   k.sprite("punk_idle", { anim: "idle" }),
