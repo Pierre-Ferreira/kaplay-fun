@@ -74,6 +74,32 @@ export default function initGame() {
     },
   });
 
+  k.loadSprite("screen1", "graphics/Monitors/Screen1.png", {
+    sliceX: 4,
+    sliceY: 1,
+    anims: {
+      idle: {
+        from: 0,
+        to: 3,
+        loop: true, // loop animation
+        speed: 4,
+      },
+    },
+  });
+
+  k.loadSprite("screen2", "graphics/Monitors/Screen2.png", {
+    sliceX: 4,
+    sliceY: 1,
+    anims: {
+      idle: {
+        from: 0,
+        to: 3,
+        loop: true, // loop animation
+        speed: 4,
+      },
+    },
+  });
+
   k.loadSprite("edamn-open", "graphics/EDAMN/EDAMN-open.png", {
     sliceX: 1,
     sliceY: 1,
@@ -87,39 +113,42 @@ export default function initGame() {
     },
   });
 
+  k.loadSound("Frieda-talk", "sounds/Frieda-talk.wav");
+
   k.scene("testing-stuff", () => {
+    const Frieda_talk_Sfx = k.play("Frieda-talk", { volume: 0.2, loop: true });
     k.add([k.sprite("blue-neon-gym-1-bg"), k.pos(0, 300), k.scale(0.15)]);
-    const punk1 = k.add([
-      k.sprite("punk_idle", { anim: "idle" }),
-      k.pos(80, 480),
-      // k.origin("center"),
-      k.scale(4),
-      // k.rotate(45),
-      // k.color(0, 0, 1),
-      // k.layer("ui"),
-    ]);
-    const cyborg1 = k.add([
-      k.sprite("cyborg_idle", { anim: "idle" }),
-      k.pos(380, 480),
-      // k.origin("center"),
-      k.scale(4),
-      // k.rotate(45),
-      // k.color(0, 0, 1),
-      // k.layer("ui"),
-    ]);
-    const biker1 = k.add([
-      k.sprite("biker_idle", { anim: "idle" }),
-      k.pos(180, 490),
-      // k.origin("center"),
-      k.scale(4),
-      // k.rotate(45),
-      // k.color(0, 0, 1),
-      // k.layer("ui"),
-    ]);
-    biker1.flipX = true;
+    // const punk1 = k.add([
+    //   k.sprite("punk_idle", { anim: "idle" }),
+    //   k.pos(80, 480),
+    //   // k.origin("center"),
+    //   k.scale(4),
+    //   // k.rotate(45),
+    //   // k.color(0, 0, 1),
+    //   // k.layer("ui"),
+    // ]);
+    // const cyborg1 = k.add([
+    //   k.sprite("cyborg_idle", { anim: "idle" }),
+    //   k.pos(380, 480),
+    //   // k.origin("center"),
+    //   k.scale(4),
+    //   // k.rotate(45),
+    //   // k.color(0, 0, 1),
+    //   // k.layer("ui"),
+    // ]);
+    // const biker1 = k.add([
+    //   k.sprite("biker_idle", { anim: "idle" }),
+    //   k.pos(180, 490),
+    //   // k.origin("center"),
+    //   k.scale(4),
+    //   // k.rotate(45),
+    //   // k.color(0, 0, 1),
+    //   // k.layer("ui"),
+    // ]);
+    // biker1.flipX = true;
     const biker2 = k.add([
       k.sprite("biker_idle2", { anim: "idle" }),
-      k.pos(500, 490),
+      k.pos(80, 490),
       // k.origin("center"),
       k.scale(4),
       // k.rotate(45),
@@ -145,6 +174,34 @@ export default function initGame() {
       // k.layer("ui"),
     ]);
     edamn.flipX = true;
+    const wok_screen1 = k.add([
+      k.sprite("screen2", { anim: "idle" }),
+      k.pos(380, 561),
+      k.anchor("center"),
+      k.scale(3),
+      // k.rotate(265),
+      // k.color(0, 0, 1),
+      // k.layer("ui"),
+    ]);
+    const wok_screen2 = k.add([
+      k.sprite("screen2", { anim: "idle" }),
+      k.pos(530, 556),
+      k.anchor("center"),
+      k.scale(3),
+      // k.rotate(265),
+      // k.color(0, 0, 1),
+      // k.layer("ui"),
+    ]);
+    const wok_screen3 = k.add([
+      k.sprite("screen2", { anim: "idle" }),
+      k.pos(680, 559),
+      k.anchor("center"),
+      k.scale(3),
+      // k.rotate(265),
+      // k.color(0, 0, 1),
+      // k.layer("ui"),
+    ]);
+    wok_screen1.flipX = true;
   });
 
   k.go("testing-stuff");
