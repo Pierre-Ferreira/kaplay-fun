@@ -3,10 +3,13 @@ import initKaplay from "../kaplayCtx";
 
 export default function initGame() {
   const k = initKaplay();
+
   k.loadSprite(
     "blue-neon-gym-1-bg",
     "graphics/backgrounds/blue-neon-gym-1-bg.jpg"
   );
+
+  k.loadSprite("kettlebell_woks", "graphics/Signs/Kettlebell_WOKs.png");
 
   k.loadSprite("biker_idle", "graphics/Biker/Biker_idle.png", {
     sliceX: 4,
@@ -116,8 +119,9 @@ export default function initGame() {
   k.loadSound("Frieda-talk", "sounds/Frieda-talk.wav");
 
   k.scene("testing-stuff", () => {
-    const Frieda_talk_Sfx = k.play("Frieda-talk", { volume: 0.1, loop: true });
+    // const Frieda_talk_Sfx = k.play("Frieda-talk", { volume: 0.1, loop: true });
     k.add([k.sprite("blue-neon-gym-1-bg"), k.pos(0, 300), k.scale(0.15)]);
+    k.add([k.sprite("kettlebell_woks"), k.pos(295, 410), k.scale(0.8)]);
     // const punk1 = k.add([
     //   k.sprite("punk_idle", { anim: "idle" }),
     //   k.pos(80, 480),
@@ -166,7 +170,7 @@ export default function initGame() {
     ]);
     const edamn = k.add([
       k.sprite("edamn-open", { anim: "idle" }),
-      k.pos(942, 590),
+      k.pos(960, 610),
       k.anchor("center"),
       k.scale(3.5),
       // k.rotate(265),
