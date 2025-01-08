@@ -3,7 +3,7 @@ import initKaplay from "../kaplayCtx";
 
 export default function initGame() {
   const k = initKaplay();
-
+  k.setBackground(k.BLACK);
   k.loadSprite(
     "blue-neon-gym-1-bg",
     "graphics/backgrounds/blue-neon-gym-1-bg.jpg"
@@ -152,13 +152,20 @@ export default function initGame() {
     // biker1.flipX = true;
     const biker2 = k.add([
       k.sprite("biker_idle2", { anim: "idle" }),
-      k.pos(80, 490),
+      k.pos(180, 590),
       // k.origin("center"),
+      k.anchor("center"),
       k.scale(4),
+      k.z(100),
+      k.timer(),
+      k.area(),
+      k.animate(),
+      "biker2",
       // k.rotate(45),
       // k.color(0, 0, 1),
       // k.layer("ui"),
     ]);
+
     const frieda = k.add([
       k.sprite("frieda_idle", { anim: "idle" }),
       k.pos(855, 430),
@@ -183,10 +190,25 @@ export default function initGame() {
       k.pos(380, 561),
       k.anchor("center"),
       k.scale(3),
+      k.area(),
       // k.rotate(265),
       // k.color(0, 0, 1),
       // k.layer("ui"),
     ]);
+    wok_screen1.onClick(() => {
+      // // .moveTo() is provided by pos() component, changes the position
+      // biker2.moveTo(k.mousePos());
+      biker2.animate(
+        "pos",
+        [k.vec2(180, 590), k.vec2(250, 590), k.vec2(450, 530)],
+        {
+          duration: 2,
+          timing: [0, 2 / 8, 1],
+          direction: "ping-pong",
+          // loops: 1,
+        }
+      );
+    });
     const wok_screen2 = k.add([
       k.sprite("screen2", { anim: "idle" }),
       k.pos(530, 556),
