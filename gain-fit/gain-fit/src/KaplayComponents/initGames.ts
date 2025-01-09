@@ -10,6 +10,8 @@ export default function initGame() {
   );
 
   k.loadSprite("kettlebell_woks", "graphics/Signs/Kettlebell_WOKs.png");
+  k.loadSprite("neon_circle_blue", "graphics/Signs/Neon_circle_blue.webp");
+  k.loadSprite("neon_i_orange", "graphics/Signs/Neon_i_orange.png");
 
   k.loadSprite("biker_idle", "graphics/Biker/Biker_idle.png", {
     sliceX: 4,
@@ -77,7 +79,7 @@ export default function initGame() {
     },
   });
 
-  k.loadSprite("screen1", "graphics/Monitors/Screen1.png", {
+  k.loadSprite("scores_screen", "graphics/Monitors/Screen1.png", {
     sliceX: 4,
     sliceY: 1,
     anims: {
@@ -90,7 +92,7 @@ export default function initGame() {
     },
   });
 
-  k.loadSprite("screen2", "graphics/Monitors/Screen2.png", {
+  k.loadSprite("wok_screen", "graphics/Monitors/Screen2.png", {
     sliceX: 4,
     sliceY: 1,
     anims: {
@@ -122,6 +124,8 @@ export default function initGame() {
     // const Frieda_talk_Sfx = k.play("Frieda-talk", { volume: 0.1, loop: true });
     k.add([k.sprite("blue-neon-gym-1-bg"), k.pos(0, 300), k.scale(0.15)]);
     k.add([k.sprite("kettlebell_woks"), k.pos(295, 410), k.scale(0.8)]);
+    k.add([k.sprite("neon_circle_blue"), k.pos(240, 430), k.scale(0.28)]);
+    k.add([k.sprite("neon_i_orange"), k.pos(247, 419), k.scale(0.6)]);
     // const punk1 = k.add([
     //   k.sprite("punk_idle", { anim: "idle" }),
     //   k.pos(80, 480),
@@ -151,7 +155,7 @@ export default function initGame() {
     // ]);
     // biker1.flipX = true;
     const biker2 = k.add([
-      k.sprite("biker_idle2", { anim: "idle" }),
+      k.sprite("biker_idle", { anim: "idle" }),
       k.pos(180, 590),
       // k.origin("center"),
       k.anchor("center"),
@@ -159,6 +163,7 @@ export default function initGame() {
       k.z(100),
       k.timer(),
       k.area(),
+      k.body,
       k.animate(),
       "biker2",
       // k.rotate(45),
@@ -186,8 +191,50 @@ export default function initGame() {
     ]);
     edamn.flipX = true;
     const wok_screen1 = k.add([
-      k.sprite("screen2", { anim: "idle" }),
-      k.pos(380, 561),
+      k.sprite("wok_screen", { anim: "idle" }),
+      k.pos(300, 571),
+      k.anchor("center"),
+      k.scale(3),
+      k.area(),
+      // k.rotate(265),
+      // k.color(0, 0, 1),
+      // k.layer("ui"),
+    ]);
+    wok_screen1.flipX = true;
+
+    const wok_screen2 = k.add([
+      k.sprite("wok_screen", { anim: "idle" }),
+      k.pos(416, 566),
+      k.anchor("center"),
+      k.scale(3),
+      k.area(),
+      // k.rotate(265),
+      // k.color(0, 0, 1),
+      // k.layer("ui"),
+    ]);
+    const wok_screen3 = k.add([
+      k.sprite("wok_screen", { anim: "idle" }),
+      k.pos(632, 570),
+      k.anchor("center"),
+      k.scale(3),
+      k.area(),
+      // k.rotate(265),
+      // k.color(0, 0, 1),
+      // k.layer("ui"),
+    ]);
+    const wok_screen4 = k.add([
+      k.sprite("wok_screen", { anim: "idle" }),
+      k.pos(750, 580),
+      k.anchor("center"),
+      k.scale(3),
+      k.area(),
+      // k.rotate(265),
+      // k.color(0, 0, 1),
+      // k.layer("ui"),
+    ]);
+    const scores_screen = k.add([
+      k.sprite("scores_screen", { anim: "idle" }),
+      k.pos(524, 535),
       k.anchor("center"),
       k.scale(3),
       k.area(),
@@ -196,38 +243,53 @@ export default function initGame() {
       // k.layer("ui"),
     ]);
     wok_screen1.onClick(() => {
-      // // .moveTo() is provided by pos() component, changes the position
-      // biker2.moveTo(k.mousePos());
       biker2.animate(
         "pos",
-        [k.vec2(180, 590), k.vec2(250, 590), k.vec2(450, 530)],
+        [
+          k.vec2(biker2.pos.x, biker2.pos.y),
+          // k.vec2(250, 590),
+          k.vec2(wok_screen1.pos.x, wok_screen1.pos.y),
+        ],
         {
           duration: 2,
           timing: [0, 2 / 8, 1],
-          direction: "ping-pong",
-          // loops: 1,
+          // direction: "ping-pong",
+          loops: 1,
         }
       );
     });
-    const wok_screen2 = k.add([
-      k.sprite("screen2", { anim: "idle" }),
-      k.pos(530, 556),
-      k.anchor("center"),
-      k.scale(3),
-      // k.rotate(265),
-      // k.color(0, 0, 1),
-      // k.layer("ui"),
-    ]);
-    const wok_screen3 = k.add([
-      k.sprite("screen2", { anim: "idle" }),
-      k.pos(680, 559),
-      k.anchor("center"),
-      k.scale(3),
-      // k.rotate(265),
-      // k.color(0, 0, 1),
-      // k.layer("ui"),
-    ]);
-    wok_screen1.flipX = true;
+    wok_screen2.onClick(() => {
+      biker2.animate(
+        "pos",
+        [
+          k.vec2(biker2.pos.x, biker2.pos.y),
+          // k.vec2(250, 590),
+          k.vec2(wok_screen2.pos.x, wok_screen2.pos.y),
+        ],
+        {
+          duration: 2,
+          timing: [0, 2 / 8, 1],
+          // direction: "ping-pong",
+          loops: 1,
+        }
+      );
+    });
+    wok_screen3.onClick(() => {
+      biker2.animate(
+        "pos",
+        [
+          k.vec2(biker2.pos.x, biker2.pos.y),
+          // k.vec2(250, 590),
+          k.vec2(wok_screen3.pos.x, wok_screen3.pos.y),
+        ],
+        {
+          duration: 2,
+          timing: [0, 2 / 8, 1],
+          // direction: "ping-pong",
+          loops: 1,
+        }
+      );
+    });
   });
 
   k.go("testing-stuff");
