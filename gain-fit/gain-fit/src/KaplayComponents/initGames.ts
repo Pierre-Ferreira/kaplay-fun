@@ -1,3 +1,4 @@
+import { GameObj } from "kaplay";
 import initKaplay from "../kaplayCtx";
 // import testing-stuff from "./scenes/testing-stuff.ts";
 
@@ -145,7 +146,11 @@ export default function initGame() {
   k.scene("testing-stuff", () => {
     const slow_travel_sfx = k.play("slow_travel", { volume: 0.05, loop: true });
     const frieda_talk_Sfx = k.play("frieda_talk", { volume: 0.01, loop: true });
-    k.add([k.sprite("blue-neon-gym-1-bg"), k.pos(0, 300), k.scale(0.15)]);
+    const wok_room_backgroud = k.add([
+      k.sprite("blue-neon-gym-1-bg"),
+      k.pos(0, 300),
+      k.scale(0.15),
+    ]);
     k.add([k.sprite("kettlebell_woks"), k.pos(295, 410), k.scale(0.8)]);
     const info_sign_blue_neon_circle = k.add([
       k.sprite("neon_circle_blue"),
@@ -161,6 +166,111 @@ export default function initGame() {
       // reset cursor to default when not hovering
       k.setCursor("default");
     });
+    // Define the dialogue data [character, text, effects]
+    const info_text: string[][] = [
+      ["[default]Oh hi![/default][red]COOL[/red]"],
+      ["[default]Hey! That's my line![/default]"],
+      // ["[default]What! Mark??? How did you get here?[/default]"],
+      // [
+      //   "[default]Ohhi! I'm just here to say that[/default] [kaboom]Kaboom.js[/kaboom] [default]is awesome![/default]",
+      // ],
+      // [
+      //   "[default]Yes but... Nobody uses[/default] [kaboom]Kaboom.js[/kaboom] [default]anymore![/default]",
+      // ],
+      // ["[surprised]What? Why?[/surprised]", "shake"],
+      // ["[default]Full compatibilty with[/default] [kaboom]Kaboom.js![/kaboom]"],
+      // ["[default]So, what are you waiting for?[/default]"],
+      // ["[default]Go and try it now![/default]"],
+    ];
+
+    // Text bubble
+    info_sign_blue_neon_circle.onClick(() => {
+      let isTalking: boolean = false;
+      let curDialog: number = 0;
+      const info_textbox: GameObj = k.add([
+        k.rect(k.width() - 240, 240, { radius: 4 }),
+        k.anchor("center"),
+        k.pos(k.center().x, wok_room_backgroud.pos.y + 180),
+        k.outline(4),
+        k.area(),
+      ]);
+      // Text
+      const txt: GameObj = k.add([
+        k.text("", {
+          size: 32,
+          width: info_textbox.width,
+          align: "center",
+          font: "Sans-Serif",
+          styles: {
+            default: {
+              color: k.BLACK,
+            },
+            red: {
+              color: k.RED,
+            },
+            // kaplay: (idx, ch) => ({
+            //   color: Color.fromHex("#6bc96c"),
+            //   pos: vec2(0, wave(-4, 4, time() * 6 + idx * 0.5)),
+            // }),
+            // kaboom: (idx, ch) => ({
+            //   color: Color.fromHex("#ff004d"),
+            //   pos: vec2(0, wave(-4, 4, time() * 4 + idx * 0.5)),
+            //   scale: wave(1, 1.2, time() * 3 + idx),
+            //   angle: wave(-9, 9, time() * 3 + idx),
+            // }),
+            // // a jump effect
+            // surprised: (idx, ch) => ({
+            //   color: Color.fromHex("#8465ec"),
+            //   scale: wave(1, 1.2, time() * 1 + idx),
+            //   pos: vec2(0, wave(0, 4, time() * 10)),
+            // }),
+            // hot: (idx, ch) => ({
+            //   color: Color.fromHex("#ff004d"),
+            //   scale: wave(1, 1.2, time() * 3 + idx),
+            //   angle: wave(-9, 9, time() * 3 + idx),
+            // }),
+          },
+          // transform: (idx, ch) => {
+          //   return {
+          //     opacity: idx < txt.letterCount ? 1 : 0,
+          //   };
+          // },
+        }),
+        k.pos(info_textbox.pos),
+        k.anchor("center"),
+        {
+          letterCount: 0,
+        },
+      ]);
+      info_textbox.onClick(() => {
+        if (isTalking) return;
+
+        // Cycle through the dialogs
+        curDialog = (curDialog + 1) % info_text.length;
+        const [dialog, eff] = info_text[curDialog];
+        startWriting(dialog);
+      });
+      function startWriting(dialog) {
+        isTalking = true;
+        txt.letterCount = 0;
+        txt.text = dialog;
+
+        const writing = k.loop(0.0175, () => {
+          txt.letterCount = Math.min(
+            txt.letterCount + 1,
+            txt.renderedText.length
+          );
+
+          if (txt.letterCount === txt.renderedText.length) {
+            isTalking = false;
+            writing.cancel();
+          }
+        });
+      }
+      const [dialog, eff] = info_text[curDialog];
+      startWriting(dialog);
+    });
+
     k.add([k.sprite("neon_i_orange"), k.pos(247, 419), k.scale(0.6)]);
     // const punk1 = k.add([
     //   k.sprite("punk_idle", { anim: "idle" }),
