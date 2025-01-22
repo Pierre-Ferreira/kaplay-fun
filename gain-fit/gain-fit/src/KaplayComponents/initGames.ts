@@ -14,7 +14,7 @@ export default function initGame() {
   k.loadSprite("neon_circle_blue", "graphics/Signs/Neon_circle_blue.webp");
   k.loadSprite("neon_i_orange", "graphics/Signs/Neon_i_orange.png");
 
-  k.loadSprite("biker_idle", "graphics/Biker/Biker_idle.png", {
+  k.loadSprite("biker_idle", "graphics/Biker/Biker_idle_yellow.png", {
     sliceX: 4,
     sliceY: 1,
     anims: {
@@ -168,8 +168,24 @@ export default function initGame() {
     });
     // Define the dialogue data [character, text, effects]
     const info_text: string[][] = [
-      ["[default]Oh hi![/default][red]COOL[/red]"],
-      ["[default]Hey! That's my line![/default]"],
+      [
+        "[red]The Big Picture[/red]\n[default]The ultimate goal is to complete 300 workouts over a two-year period while striving\nfor consistent improvement with each iteration of a workout, even if it's just by 1%.[/default]",
+      ],
+      [
+        "[red]How to use[/red]\n[default]Each week, you’ll receive four Kettlebell Complex workouts to tackle. Click on the four flickering monitors to view them.\nAt the start of each week, a new set of workouts will be introduced.[/default]",
+      ],
+      [
+        "[default]Strive to complete every workout whenever possible. If that's not feasible, aim to finish as many as you can.[/default]",
+      ],
+      [
+        "[default]After completing a workout, enter the required details on the workout sheet, such as time taken, reps completed, and kettlebell weight used. A score will then be calculated based on this information. When the workout comes up again, you'll see exactly what you need to do to improve your previous score—whether it's finishing faster or using a slightly heavier kettlebell.[/default]",
+      ],
+      [
+        "[default]Every workout has a unique name and will reappear on a rotating schedule every few weeks.[/default]",
+      ],
+      ["[default][/default]"],
+      ["[default][/default]"],
+
       // ["[default]What! Mark??? How did you get here?[/default]"],
       // [
       //   "[default]Ohhi! I'm just here to say that[/default] [kaboom]Kaboom.js[/kaboom] [default]is awesome![/default]",
