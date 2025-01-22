@@ -1,5 +1,6 @@
 import { GameObj } from "kaplay";
 import initKaplay from "../kaplayCtx";
+import { store, isShowingInfoTextAtom } from "../store";
 // import testing-stuff from "./scenes/testing-stuff.ts";
 
 export default function initGame() {
@@ -158,18 +159,18 @@ export default function initGame() {
       k.scale(0.28),
       k.area(),
     ]);
-    info_sign_blue_neon_circle.onHover((c) => {
+    info_sign_blue_neon_circle.onHover(() => {
       // change cursor to pointer when hovering over button
       k.setCursor("pointer");
     });
-    info_sign_blue_neon_circle.onHoverEnd((c) => {
+    info_sign_blue_neon_circle.onHoverEnd(() => {
       // reset cursor to default when not hovering
       k.setCursor("default");
     });
     // Define the dialogue data [character, text, effects]
     const info_text: string[][] = [
       [
-        "[red]The Big Picture[/red]\n[default]The ultimate goal is to complete 300 workouts over a two-year period while striving\nfor consistent improvement with each iteration of a workout, even if it's just by 1%.[/default]",
+        "[red]The Big Picture[/red]\n[default]The ultimate goal is to complete 300 workouts over a two-year period while striving\nfor consistent improvement with each iteration of a workout, even if it's just by 1%.[small_default]\n (Click for more...)[/small_default][/default]",
       ],
       [
         "[red]How to use[/red]\n[default]Each week, you’ll receive four Kettlebell Complex workouts to tackle. Click on the four flickering monitors to view them.\nAt the start of each week, a new set of workouts will be introduced.[/default]",
@@ -183,33 +184,45 @@ export default function initGame() {
       [
         "[default]Every workout has a unique name and will reappear on a rotating schedule every few weeks.[/default]",
       ],
-      ["[default][/default]"],
-      ["[default][/default]"],
-
-      // ["[default]What! Mark??? How did you get here?[/default]"],
-      // [
-      //   "[default]Ohhi! I'm just here to say that[/default] [kaboom]Kaboom.js[/kaboom] [default]is awesome![/default]",
-      // ],
-      // [
-      //   "[default]Yes but... Nobody uses[/default] [kaboom]Kaboom.js[/kaboom] [default]anymore![/default]",
-      // ],
-      // ["[surprised]What? Why?[/surprised]", "shake"],
-      // ["[default]Full compatibilty with[/default] [kaboom]Kaboom.js![/kaboom]"],
-      // ["[default]So, what are you waiting for?[/default]"],
-      // ["[default]Go and try it now![/default]"],
+      // ["[default][/default]"],
+      // ["[default][/default]"],
     ];
 
     // Text bubble
     info_sign_blue_neon_circle.onClick(() => {
-      let isTalking: boolean = false;
+      store.set(isShowingInfoTextAtom, true);
+      let isRenderingInfoText: boolean = false;
       let curDialog: number = 0;
       const info_textbox: GameObj = k.add([
         k.rect(k.width() - 240, 240, { radius: 4 }),
         k.anchor("center"),
         k.pos(k.center().x, wok_room_backgroud.pos.y + 180),
+        k.z(101),
         k.outline(4),
         k.area(),
       ]);
+      const close_btn = info_textbox.add([
+        k.rect(40, 40, { radius: 4 }),
+        k.anchor("center"),
+        k.color(k.WHITE),
+        // k.pos(wok_room_backgroud.pos.x - 360, wok_room_backgroud.pos.y - 440),
+        k.pos(-360, -140),
+        k.z(101),
+        k.outline(4),
+        k.area(),
+      ]);
+      close_btn.add([
+        k.text("X"),
+        k.color(k.BLACK),
+        k.anchor("center"),
+        k.pos(0, 3),
+      ]);
+      close_btn.onClick(() => {
+        store.set(isShowingInfoTextAtom, false);
+        info_textbox.destroy();
+        close_btn.destroy();
+        txt.destroy();
+      });
       // Text
       const txt: GameObj = k.add([
         k.text("", {
@@ -223,6 +236,10 @@ export default function initGame() {
             },
             red: {
               color: k.RED,
+            },
+            small_default: {
+              color: k.BLACK,
+              scale: 0.5,
             },
             // kaplay: (idx, ch) => ({
             //   color: Color.fromHex("#6bc96c"),
@@ -254,20 +271,21 @@ export default function initGame() {
         }),
         k.pos(info_textbox.pos),
         k.anchor("center"),
+        k.z(101),
         {
           letterCount: 0,
         },
       ]);
       info_textbox.onClick(() => {
-        if (isTalking) return;
+        if (isRenderingInfoText) return;
 
         // Cycle through the dialogs
         curDialog = (curDialog + 1) % info_text.length;
-        const [dialog, eff] = info_text[curDialog];
+        const [dialog] = info_text[curDialog];
         startWriting(dialog);
       });
-      function startWriting(dialog) {
-        isTalking = true;
+      function startWriting(dialog: string) {
+        isRenderingInfoText = true;
         txt.letterCount = 0;
         txt.text = dialog;
 
@@ -278,12 +296,12 @@ export default function initGame() {
           );
 
           if (txt.letterCount === txt.renderedText.length) {
-            isTalking = false;
+            isRenderingInfoText = false;
             writing.cancel();
           }
         });
       }
-      const [dialog, eff] = info_text[curDialog];
+      const [dialog] = info_text[curDialog];
       startWriting(dialog);
     });
 
@@ -405,6 +423,7 @@ export default function initGame() {
       // k.layer("ui"),
     ]);
     wok_screen1.onClick(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       biker2.animate(
         "pos",
         [
@@ -421,6 +440,7 @@ export default function initGame() {
       );
     });
     wok_screen2.onClick(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       biker2.animate(
         "pos",
         [
@@ -437,6 +457,7 @@ export default function initGame() {
       );
     });
     wok_screen3.onClick(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       biker2.animate(
         "pos",
         [
@@ -453,6 +474,7 @@ export default function initGame() {
       );
     });
     wok_screen4.onClick(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       biker2.animate(
         "pos",
         [
@@ -468,35 +490,43 @@ export default function initGame() {
         }
       );
     });
-    wok_screen1.onHover((c) => {
+    wok_screen1.onHover(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       // change cursor to pointer when hovering over button
       k.setCursor("pointer");
     });
-    wok_screen1.onHoverEnd((c) => {
+    wok_screen1.onHoverEnd(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       // reset cursor to default when not hovering
       k.setCursor("default");
     });
-    wok_screen2.onHover((c) => {
+    wok_screen2.onHover(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       // change cursor to pointer when hovering over button
       k.setCursor("pointer");
     });
-    wok_screen2.onHoverEnd((c) => {
+    wok_screen2.onHoverEnd(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       // reset cursor to default when not hovering
       k.setCursor("default");
     });
-    wok_screen3.onHover((c) => {
+    wok_screen3.onHover(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       // change cursor to pointer when hovering over button
       k.setCursor("pointer");
     });
-    wok_screen3.onHoverEnd((c) => {
+    wok_screen3.onHoverEnd(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       // reset cursor to default when not hovering
       k.setCursor("default");
     });
-    wok_screen4.onHover((c) => {
+    wok_screen4.onHover(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       // change cursor to pointer when hovering over button
       k.setCursor("pointer");
     });
-    wok_screen4.onHoverEnd((c) => {
+    wok_screen4.onHoverEnd(() => {
+      if (store.get(isShowingInfoTextAtom)) return;
       // reset cursor to default when not hovering
       k.setCursor("default");
     });
