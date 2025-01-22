@@ -179,7 +179,10 @@ export default function initGame() {
         "[default]Strive to complete every workout whenever possible. If that's not feasible, aim to finish as many as you can.[/default]",
       ],
       [
-        "[default]After completing a workout, enter the required details on the workout sheet, such as time taken, reps completed, and kettlebell weight used. A score will then be calculated based on this information. When the workout comes up again, you'll see exactly what you need to do to improve your previous score—whether it's finishing faster or using a slightly heavier kettlebell.[/default]",
+        "[default]After completing a workout, enter the required details on the workout sheet, such as time taken, reps completed, and kettlebell weight used.\n A score will then be calculated based on this information.[/default]",
+      ],
+      [
+        "[default]When the workout comes up again, you'll see exactly what you need to do to improve your previous score—whether it's finishing faster or using a slightly heavier kettlebell.[/default]",
       ],
       [
         "[default]Every workout has a unique name and will reappear on a rotating schedule every few weeks.[/default]",
@@ -204,7 +207,7 @@ export default function initGame() {
       const close_btn = info_textbox.add([
         k.rect(40, 40, { radius: 4 }),
         k.anchor("center"),
-        k.color(k.WHITE),
+        k.color(k.YELLOW),
         // k.pos(wok_room_backgroud.pos.x - 360, wok_room_backgroud.pos.y - 440),
         k.pos(-360, -140),
         k.z(101),
