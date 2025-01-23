@@ -1,3 +1,0 @@
-import initKaplay from "../../kaplayCtx.ts";
-
-const k = initKaplay();
