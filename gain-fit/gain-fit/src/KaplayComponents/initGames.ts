@@ -1,6 +1,6 @@
 import initKaplay from "../kaplayCtx";
 import kettlebell_wok_room from "./scenes/kettlebel_wok_room";
-import loadAssets from "./assets";
+import loadAssets from "./loadAssets";
 // import testing-stuff from "./scenes/testing-stuff.ts";
 
 const k = initKaplay();

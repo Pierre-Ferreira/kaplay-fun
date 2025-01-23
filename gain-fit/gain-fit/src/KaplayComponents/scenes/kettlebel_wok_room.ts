@@ -1,17 +1,68 @@
-// import initKaplay from "../../kaplayCtx.ts";
-import { GameObj, KAPLAYCtx } from "kaplay";
+import { AudioPlay, GameObj, KAPLAYCtx } from "kaplay";
 import { store, isShowingInfoTextAtom } from "../../store.ts";
 
 export default function kettlebell_wok_room(k: KAPLAYCtx) {
   k.setBackground(k.BLACK);
+  function getRandomNumber(): number {
+    return Math.floor(Math.random() * 10);
+  }
+  const randomNum1: number = getRandomNumber();
+  let ambient_music_sfx: AudioPlay = k.play("", {});
+  let frieda_talk_Sfx: AudioPlay = k.play("", {});
+  switch (randomNum1) {
+    case 1:
+      console.log("Random number1 is 1");
+      ambient_music_sfx = k.play("slow_travel", { volume: 0.05, loop: true });
+      break;
+    case 2:
+      console.log("Random number1 is 2");
+      frieda_talk_Sfx = k.play("frieda_talk", { volume: 0.01, loop: true });
+      break;
+    case 3:
+      console.log("Random number1 is 3");
+      ambient_music_sfx = k.play("loading_biker", { volume: 0.05, loop: true });
+      break;
+    case 4:
+      console.log("Random number1 is 4");
+      ambient_music_sfx = k.play("loading_biker", { volume: 0.05, loop: true });
+      frieda_talk_Sfx = k.play("frieda_talk", { volume: 0.01, loop: true });
+      break;
+    default:
+      console.log("Random number1 is neither 1 nor 2");
+      ambient_music_sfx = k.play("slow_travel", { volume: 0.05, loop: true });
+      frieda_talk_Sfx = k.play("frieda_talk", { volume: 0.01, loop: true });
+      break;
+  }
 
-  const slow_travel_sfx = k.play("slow_travel", { volume: 0.05, loop: true });
-  const frieda_talk_Sfx = k.play("frieda_talk", { volume: 0.01, loop: true });
-  const wok_room_backgroud = k.add([
-    k.sprite("blue-neon-gym-1-bg"),
-    k.pos(0, 300),
-    k.scale(0.15),
-  ]);
+  const randomNum2: number = getRandomNumber();
+  let wok_room_backgroud: GameObj = k.add([]);
+  switch (randomNum2) {
+    case 1:
+      console.log("Random number2 is 1");
+      wok_room_backgroud = k.add([
+        k.sprite("orange_neon_gym_bg"),
+        k.pos(0, 300),
+        k.scale(0.15),
+      ]);
+      break;
+    case 2:
+      console.log("Random number2 is 2");
+      wok_room_backgroud = k.add([
+        k.sprite("blue-neon-gym-2-bg"),
+        k.pos(0, 300),
+        k.scale(0.15),
+      ]);
+      break;
+    default:
+      console.log("Random number2 is neither 1 nor 2");
+      wok_room_backgroud = k.add([
+        k.sprite("blue-neon-gym-1-bg"),
+        k.pos(0, 300),
+        k.scale(0.15),
+      ]);
+      break;
+  }
+
   k.add([k.sprite("kettlebell_woks"), k.pos(295, 410), k.scale(0.8)]);
   const info_sign_blue_neon_circle = k.add([
     k.sprite("neon_circle_blue"),
