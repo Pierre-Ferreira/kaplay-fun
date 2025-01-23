@@ -204,7 +204,15 @@ export default function initGame() {
         k.outline(4),
         k.area(),
       ]);
-      const close_btn = info_textbox.add([
+      info_textbox.onHover(() => {
+        // change cursor to pointer when hovering over button
+        k.setCursor("pointer");
+      });
+      info_textbox.onHoverEnd(() => {
+        // reset cursor to default when not hovering
+        k.setCursor("default");
+      });
+      const close_btn: GameObj = info_textbox.add([
         k.rect(40, 40, { radius: 4 }),
         k.anchor("center"),
         k.color(k.YELLOW),
@@ -225,6 +233,14 @@ export default function initGame() {
         info_textbox.destroy();
         close_btn.destroy();
         txt.destroy();
+      });
+      close_btn.onHover(() => {
+        // change cursor to pointer when hovering over button
+        k.setCursor("pointer");
+      });
+      close_btn.onHoverEnd(() => {
+        // reset cursor to default when not hovering
+        k.setCursor("default");
       });
       // Text
       const txt: GameObj = k.add([
