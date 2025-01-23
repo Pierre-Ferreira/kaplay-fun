@@ -1,9 +1,6 @@
 // import initKaplay from "../../kaplayCtx.ts";
 import { GameObj, KAPLAYCtx } from "kaplay";
 import { store, isShowingInfoTextAtom } from "../../store.ts";
-// import assets from "../assets.ts";
-
-// const k = initKaplay();
 
 export default function kettlebell_wok_room(k: KAPLAYCtx) {
   k.setBackground(k.BLACK);
@@ -79,7 +76,6 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
       k.rect(40, 40, { radius: 4 }),
       k.anchor("center"),
       k.color(k.YELLOW),
-      // k.pos(wok_room_backgroud.pos.x - 360, wok_room_backgroud.pos.y - 440),
       k.pos(-360, -140),
       k.z(101),
       k.outline(4),
@@ -123,33 +119,7 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
             color: k.BLACK,
             scale: 0.5,
           },
-          // kaplay: (idx, ch) => ({
-          //   color: Color.fromHex("#6bc96c"),
-          //   pos: vec2(0, wave(-4, 4, time() * 6 + idx * 0.5)),
-          // }),
-          // kaboom: (idx, ch) => ({
-          //   color: Color.fromHex("#ff004d"),
-          //   pos: vec2(0, wave(-4, 4, time() * 4 + idx * 0.5)),
-          //   scale: wave(1, 1.2, time() * 3 + idx),
-          //   angle: wave(-9, 9, time() * 3 + idx),
-          // }),
-          // // a jump effect
-          // surprised: (idx, ch) => ({
-          //   color: Color.fromHex("#8465ec"),
-          //   scale: wave(1, 1.2, time() * 1 + idx),
-          //   pos: vec2(0, wave(0, 4, time() * 10)),
-          // }),
-          // hot: (idx, ch) => ({
-          //   color: Color.fromHex("#ff004d"),
-          //   scale: wave(1, 1.2, time() * 3 + idx),
-          //   angle: wave(-9, 9, time() * 3 + idx),
-          // }),
         },
-        // transform: (idx, ch) => {
-        //   return {
-        //     opacity: idx < txt.letterCount ? 1 : 0,
-        //   };
-        // },
       }),
       k.pos(info_textbox.pos),
       k.anchor("center"),
@@ -188,34 +158,7 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
   });
 
   k.add([k.sprite("neon_i_orange"), k.pos(247, 419), k.scale(0.6)]);
-  // const punk1 = k.add([
-  //   k.sprite("punk_idle", { anim: "idle" }),
-  //   k.pos(80, 480),
-  //   // k.origin("center"),
-  //   k.scale(4),
-  //   // k.rotate(45),
-  //   // k.color(0, 0, 1),
-  //   // k.layer("ui"),
-  // ]);
-  // const cyborg1 = k.add([
-  //   k.sprite("cyborg_idle", { anim: "idle" }),
-  //   k.pos(380, 480),
-  //   // k.origin("center"),
-  //   k.scale(4),
-  //   // k.rotate(45),
-  //   // k.color(0, 0, 1),
-  //   // k.layer("ui"),
-  // ]);
-  // const biker1 = k.add([
-  //   k.sprite("biker_idle", { anim: "idle" }),
-  //   k.pos(180, 490),
-  //   // k.origin("center"),
-  //   k.scale(4),
-  //   // k.rotate(45),
-  //   // k.color(0, 0, 1),
-  //   // k.layer("ui"),
-  // ]);
-  // biker1.flipX = true;
+
   const biker2 = k.add([
     k.sprite("biker_idle", { anim: "idle" }),
     k.pos(180, 590),
@@ -228,9 +171,6 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
     k.body,
     k.animate(),
     "biker2",
-    // k.rotate(45),
-    // k.color(0, 0, 1),
-    // k.layer("ui"),
   ]);
 
   const frieda = k.add([
@@ -239,17 +179,12 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
     k.anchor("center"),
     k.scale(2.5),
     k.rotate(265),
-    // k.color(0, 0, 1),
-    // k.layer("ui"),
   ]);
   const edamn = k.add([
     k.sprite("edamn-open", { anim: "idle" }),
     k.pos(960, 610),
     k.anchor("center"),
     k.scale(3.5),
-    // k.rotate(265),
-    // k.color(0, 0, 1),
-    // k.layer("ui"),
   ]);
   edamn.flipX = true;
   const wok_screen1 = k.add([
@@ -258,9 +193,6 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
     k.anchor("center"),
     k.scale(3),
     k.area(),
-    // k.rotate(265),
-    // k.color(0, 0, 1),
-    // k.layer("ui"),
   ]);
   wok_screen1.flipX = true;
 
@@ -270,9 +202,6 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
     k.anchor("center"),
     k.scale(3),
     k.area(),
-    // k.rotate(265),
-    // k.color(0, 0, 1),
-    // k.layer("ui"),
   ]);
   const wok_screen3 = k.add([
     k.sprite("wok_screen", { anim: "idle" }),
@@ -280,9 +209,6 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
     k.anchor("center"),
     k.scale(3),
     k.area(),
-    // k.rotate(265),
-    // k.color(0, 0, 1),
-    // k.layer("ui"),
   ]);
   const wok_screen4 = k.add([
     k.sprite("wok_screen", { anim: "idle" }),
@@ -290,9 +216,6 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
     k.anchor("center"),
     k.scale(3),
     k.area(),
-    // k.rotate(265),
-    // k.color(0, 0, 1),
-    // k.layer("ui"),
   ]);
   const scores_screen = k.add([
     k.sprite("scores_screen", { anim: "idle" }),
@@ -300,9 +223,6 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
     k.anchor("center"),
     k.scale(3),
     k.area(),
-    // k.rotate(265),
-    // k.color(0, 0, 1),
-    // k.layer("ui"),
   ]);
   wok_screen1.onClick(() => {
     if (store.get(isShowingInfoTextAtom)) return;
@@ -412,45 +332,4 @@ export default function kettlebell_wok_room(k: KAPLAYCtx) {
     // reset cursor to default when not hovering
     k.setCursor("default");
   });
-
-  // // wok_screen4.onHover(() => {
-  // //   cursor.sprite = "grab_cursor";
-  // // });
-
-  // // wok_screen4.onHoverEnd(() => {
-  // //   cursor.sprite = "default_cursor";
-  // // });
-  // // Set the layers, the cursor will be on top of everything, "ui"
-  // k.layers(["game", "ui"], "game");
-
-  // // We create the object that will emulate the OS mouse
-  // const cursor = k.add([
-  //   k.sprite("default_cursor"),
-  //   k.pos(),
-  //   k.layer("ui"),
-  //   k.scale(0.05),
-  //   // The fakeMouse() component will make it movable with a real mouse
-  //   k.fakeMouse({
-  //     followMouse: true, // disable if you want
-  //   }),
-  // ]);
-
-  // k.setCursor("none"); // Hide the real mouse
-  // // Mouse movement with the keyboard
-  // const MOUSE_VEL = 200;
-  // cursor.onKeyDown("left", () => {
-  //   cursor.move(-MOUSE_VEL, 0);
-  // });
-
-  // cursor.onKeyDown("right", () => {
-  //   cursor.move(MOUSE_VEL, 0);
-  // });
-
-  // cursor.onKeyDown("up", () => {
-  //   cursor.move(0, -MOUSE_VEL);
-  // });
-
-  // cursor.onKeyDown("down", () => {
-  //   cursor.move(0, MOUSE_VEL);
-  // });
 }
