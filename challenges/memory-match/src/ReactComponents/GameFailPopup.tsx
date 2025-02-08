@@ -6,13 +6,13 @@ export default function GameFailPopup() {
 	//ignore-lint
 
 	const setFailSignVisibleAtom = useSetAtom(isFailSignVisibleAtom);
-	const setRunNewGameFlagStom = useSetAtom(runNewGameFlagAtom);
+	const setRunNewGameFlagAtom = useSetAtom(runNewGameFlagAtom);
 	const setCntPlayFailRoundSoundAtom = useSetAtom(cntPlayFailRoundSoundAtom);
 
 	const closePopup = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		setFailSignVisibleAtom(false);
-		setRunNewGameFlagStom(true);
+		setRunNewGameFlagAtom(true);
 		setCntPlayFailRoundSoundAtom(-1);
 	};
 	return (
